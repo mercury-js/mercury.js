@@ -1,6 +1,6 @@
-# [TODO: PROJECT NAME]
+# Mercury.js
 
-[TODO: PROJECT NAME] is a customizable headless storefront template for ecom stores. It is:
+Mercury.js is a customizable headless storefront template for ecom stores. It is:
 - Optimized for speed & performance and UX & DX with extended support for dynamic content (such as search and product recommendations)
 - Under active development (using Shopify as testing ground), **not ready** for production yet
 - Built on top of Next.js and React 18 (RC)
@@ -47,7 +47,7 @@ The information below has been copied/adapted from [Next.js Commerce README](htt
 
 ## Integrations
 
-[TODO: PROJECT NAME] integrates out-of-the-box with BigCommerce, Shopify, Swell, Saleor, Vendure, Spree and Commerce.js. The plan is to support all major ecommerce backends.
+Mercury.js integrates out-of-the-box with BigCommerce, Shopify, Swell, Saleor, Vendure, Spree and Commerce.js. The plan is to support all major ecommerce backends.
 
 
 ## Configuration
