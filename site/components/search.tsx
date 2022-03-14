@@ -2,7 +2,9 @@ import cn from 'clsx'
 import type { SearchPropsType } from '@lib/search-props'
 import Link from 'next/link'
 import { useState } from 'react'
-import { useRouter } from 'next/router'
+
+import type { Router } from 'next/router'
+import type { RouterSnapshot } from '@components/custom/helpers'
 
 import { Layout } from '@components/common'
 import { ProductCard } from '@components/product'
@@ -28,11 +30,12 @@ import {
   useSearchMeta,
 } from '@lib/search'
 
-export default function Search({ categories, brands }: SearchPropsType) {
+export default function Search({
+  categories, brands, router
+}: SearchPropsType & { router: Router | RouterSnapshot }) {
   const [activeFilter, setActiveFilter] = useState('')
   const [toggleFilter, setToggleFilter] = useState(false)
 
-  const router = useRouter()
   const { asPath, locale } = router
   const { q, sort } = router.query
   // `q` can be included but because categories and designers can't be searched
@@ -74,7 +77,7 @@ export default function Search({ categories, brands }: SearchPropsType) {
                 <button
                   type="button"
                   onClick={(e) => handleClick(e, 'categories')}
-                  className="flex justify-between w-full rounded-sm border border-accent-3 px-4 py-3 bg-accent-0 text-sm leading-5 font-medium text-accent-4 hover:text-accent-5 focus:outline-none focus:border-blue-300 focus:shadow-outline-normal active:bg-accent-1 active:text-accent-8 transition ease-in-out duration-150"
+                  className="flex justify-between w-full rounded-sm border border-accent-3 px-4 py-3 bg-accent-0 text-sm leading-5 font-medium text-accent-4 hover:text-accent-5 focus:outline-none focus:border-blue-300 focus:shadow-outline-normal active:bg-accent-1 active:text-accent-8"
                   id="options-menu"
                   aria-haspopup="true"
                   aria-expanded="true"
@@ -172,7 +175,7 @@ export default function Search({ categories, brands }: SearchPropsType) {
                 <button
                   type="button"
                   onClick={(e) => handleClick(e, 'brands')}
-                  className="flex justify-between w-full rounded-sm border border-accent-3 px-4 py-3 bg-accent-0 text-sm leading-5 font-medium text-accent-8 hover:text-accent-5 focus:outline-none focus:border-blue-300 focus:shadow-outline-normal active:bg-accent-1 active:text-accent-8 transition ease-in-out duration-150"
+                  className="flex justify-between w-full rounded-sm border border-accent-3 px-4 py-3 bg-accent-0 text-sm leading-5 font-medium text-accent-8 hover:text-accent-5 focus:outline-none focus:border-blue-300 focus:shadow-outline-normal active:bg-accent-1 active:text-accent-8"
                   id="options-menu"
                   aria-haspopup="true"
                   aria-expanded="true"
@@ -270,11 +273,11 @@ export default function Search({ categories, brands }: SearchPropsType) {
         {/* Products */}
         <div className="col-span-8 order-3 lg:order-none">
           {(q || activeCategory || activeBrand) && (
-            <div className="mb-12 transition ease-in duration-75">
+            <div className="mb-12">
               {data ? (
                 <>
                   <span
-                    className={cn('animated', {
+                    className={cn({
                       fadeIn: data.found,
                       hidden: !data.found,
                     })}
@@ -287,7 +290,7 @@ export default function Search({ categories, brands }: SearchPropsType) {
                     )}
                   </span>
                   <span
-                    className={cn('animated', {
+                    className={cn({
                       fadeIn: !data.found,
                       hidden: data.found,
                     })}
@@ -318,7 +321,6 @@ export default function Search({ categories, brands }: SearchPropsType) {
                 <ProductCard
                   variant="simple"
                   key={product.path}
-                  className="animated fadeIn"
                   product={product}
                   imgProps={{
                     width: 480,
@@ -346,7 +348,7 @@ export default function Search({ categories, brands }: SearchPropsType) {
                 <button
                   type="button"
                   onClick={(e) => handleClick(e, 'sort')}
-                  className="flex justify-between w-full rounded-sm border border-accent-3 px-4 py-3 bg-accent-0 text-sm leading-5 font-medium text-accent-4 hover:text-accent-5 focus:outline-none focus:border-blue-300 focus:shadow-outline-normal active:bg-accent-1 active:text-accent-8 transition ease-in-out duration-150"
+                  className="flex justify-between w-full rounded-sm border border-accent-3 px-4 py-3 bg-accent-0 text-sm leading-5 font-medium text-accent-4 hover:text-accent-5 focus:outline-none focus:border-blue-300 focus:shadow-outline-normal active:bg-accent-1 active:text-accent-8"
                   id="options-menu"
                   aria-haspopup="true"
                   aria-expanded="true"

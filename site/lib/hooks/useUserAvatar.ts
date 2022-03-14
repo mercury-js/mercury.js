@@ -6,11 +6,12 @@ export const useUserAvatar = (name = 'userAvatar') => {
   const { userAvatar, setUserAvatar } = useUI()
 
   useEffect(() => {
-    if (!userAvatar && localStorage.getItem(name)) {
+    const userAvatarBg = localStorage.getItem(name);
+    if (!userAvatar && userAvatarBg) {
       // Get bg from localStorage and push it to the context.
-      setUserAvatar(localStorage.getItem(name))
+      setUserAvatar(userAvatarBg)
     }
-    if (!localStorage.getItem(name)) {
+    if (!userAvatarBg) {
       // bg not set locally, generating one, setting localStorage and context to persist.
       const bg = getRandomPairOfColors()
       const value = `linear-gradient(140deg, ${bg[0]}, ${bg[1]} 100%)`

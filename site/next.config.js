@@ -35,6 +35,26 @@ module.exports = withCommerceConfig({
         },
     ].filter(Boolean)
   },
+  experimental: {
+    
+    // NOTE:
+    // - can't use SSG with React 18 ("experimental" HTTP
+    //   streaming or Sever Components), for now. Follow:
+    //   - https://github.com/vercel/next.js/issues/35023 
+    //   - https://github.com/vercel/next.js/issues/34247
+    //   - https://github.com/vercel/next.js/discussions/34179
+
+    reactRoot: true,
+    // TODO: try edge
+    runtime: 'nodejs',
+    serverComponents: true,
+
+  },
+
+  // NOTE:
+  // - identifies unsafe lifecycles (w.r.t concurrent features)
+  // - renders components (and runs effects) twice in dev
+  reactStrictMode: true,
 })
 
 // Don't delete this console log, useful to see the commerce config in Vercel deployments

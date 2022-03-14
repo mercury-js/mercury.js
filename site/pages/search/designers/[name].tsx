@@ -2,15 +2,18 @@ import { getSearchStaticProps } from '@lib/search-props'
 import type { GetStaticPathsResult, GetStaticPropsContext } from 'next'
 import Search from '@components/search'
 
-export async function getStaticProps(context: GetStaticPropsContext) {
-  return getSearchStaticProps(context)
+export async function getServerSideProps(context: GetStaticPropsContext) {
+  const res = await getSearchStaticProps(context); // @ts-ignore
+  delete res.revalidate; // static prop
+  return res;
 }
 
-export function getStaticPaths(): GetStaticPathsResult {
-  return {
-    paths: [],
-    fallback: 'blocking',
-  }
-}
+// NOTE: for now not available on "experimental" (React 18)
+// export function getStaticPaths(): GetStaticPathsResult {
+//   return {
+//     paths: [],
+//     fallback: 'blocking',
+//   }
+// }
 
 export default Search

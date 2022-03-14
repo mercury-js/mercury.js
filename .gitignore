@@ -38,3 +38,11 @@ yarn-error.log*
 
 # Turborepo
 .turbo
+
+# temp files and folders
+Temp*.tsx
+zzz_*
+
+# local note files
+TODO*
+NOTE*

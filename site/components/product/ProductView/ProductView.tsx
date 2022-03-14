@@ -1,19 +1,21 @@
 import cn from 'clsx'
 import Image from 'next/image'
 import s from './ProductView.module.css'
-import { FC } from 'react'
+import { FC, Suspense, lazy } from 'react'
 import type { Product } from '@commerce/types/product'
 import usePrice from '@framework/product/use-price'
 import { WishlistButton } from '@components/wishlist'
 import { ProductSlider, ProductCard } from '@components/product'
 import { Container, Text } from '@components/ui'
 import { SEO } from '@components/common'
-import ProductSidebar from '../ProductSidebar'
 import ProductTag from '../ProductTag'
 interface ProductViewProps {
   product: Product
   relatedProducts: Product[]
 }
+
+// TODO:more Suspense, code splitting with proper boundaries
+const ProductSidebar = lazy(() => import('../ProductSidebar'))
 
 const ProductView: FC<ProductViewProps> = ({ product, relatedProducts }) => {
   const { price } = usePrice({
@@ -58,11 +60,13 @@ const ProductView: FC<ProductViewProps> = ({ product, relatedProducts }) => {
             )}
           </div>
 
-          <ProductSidebar
-            key={product.id}
-            product={product}
-            className={s.sidebar}
-          />
+          <Suspense fallback="Loading...">
+            <ProductSidebar
+              key={product.id}
+              product={product}
+              className={s.sidebar}
+            />
+          </Suspense>
         </div>
         <hr className="mt-7 border-accent-2" />
         <section className="py-12 px-6 mb-10">
@@ -71,15 +75,16 @@ const ProductView: FC<ProductViewProps> = ({ product, relatedProducts }) => {
             {relatedProducts.map((p) => (
               <div
                 key={p.path}
-                className="animated fadeIn bg-accent-0 border border-accent-2"
+                className="bg-accent-0 border border-accent-2"
               >
                 <ProductCard
                   noNameTag
                   product={p}
                   key={p.path}
                   variant="simple"
-                  className="animated fadeIn"
                   imgProps={{
+                    // TODO: above the fold
+                    loading: 'eager',
                     width: 300,
                     height: 300,
                   }}
