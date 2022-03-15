@@ -11,6 +11,7 @@
 import {
   memo,
   useRef,
+  Suspense,
   useState,
   useEffect,
   useReducer,
@@ -100,7 +101,9 @@ export default function AppPagePrerenderer({
    * Page paths (incl. slugs) to (page) components
    * to **opt-in** to the client-side prerendering.
    * @example [ [ '/product/[slug]', ProductSlug ], ]
-   * @note see above notes on component description
+   * @note
+   * - supports lazily (dynamically) imported components
+   * - see also above notes on component description
    */
   pageComponents: Array<[ string, NextPage ]>;
   /**
@@ -300,7 +303,9 @@ export default function AppPagePrerenderer({
           id={'__prerendered_' + path}
           style={path === router.asPath ? {} : { display: 'none' }}
         >
-          <ShellComponent {...props} />
+          <Suspense fallback="Loading...">
+            <ShellComponent {...props} />
+          </Suspense>
         </span>
       );
     })}

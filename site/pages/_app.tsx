@@ -2,7 +2,7 @@ import '@assets/main.css'
 import '@assets/chrome-bug.css'
 import 'keen-slider/keen-slider.min.css'
 
-import { FC, useEffect } from 'react'
+import { FC, useEffect, lazy } from 'react'
 import type { AppProps } from 'next/app'
 import { Head } from '@components/common'
 import { ManagedUIContext } from '@components/ui/context'
@@ -32,11 +32,16 @@ export default function MyApp({
             // TODO: automatic resolving?
             // (with easy-to-understand opt-in)
             // (with glob/fs? hox func name mangling)
-            pageComponents={[ // (also import lazily)
-              // ... [ <path(-with-slugs)> , <component> ]
-              [ '/product/[slug]'          , ProductSlug ],
-              [ '/search/designers/[name]' , DesignerCat ],
-            ]}
+            pageComponents={[
+              '/product/[slug]',
+              '/search/designers/[name]'
+            ].map(pagePath => (
+              // NOTE:
+              // - lazy for a smaller JS bundle on initial load
+              // - webpack wants a template string and a "hint" for
+              //   a dynamic import (file extension does the trick here)
+              [ pagePath, lazy(() => import(`.${pagePath}.tsx`)) ]
+            ))}
 
             {...{ // TODO: a more elegant solution?
               router, // NOTE: passed for fresh ref
