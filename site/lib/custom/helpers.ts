@@ -13,6 +13,14 @@
 */
 
 
+/* HOF */
+
+const mapperReduce = <T>(
+  g: (x: T, y: T) => T,
+  f: (x: T) => T,
+) => (...xs: T[]) => xs.slice(1).reduce((a, e) => g(a, f(e)), f(xs[0]));
+
+
 /* Env */
 
 const isClient = () => typeof window !== 'undefined';
@@ -123,6 +131,25 @@ const addOnVisible = (
   entry.isIntersecting && callback();
 }, options).observe(element);
 
+/**
+ * @param elems - Selector or superset of elements.
+ * @param grouper - Subset grouper.
+ * @returns Grouped elements.
+ */
+function getGroupedElems(
+  elems: string | Element[] | NodeList,
+  grouper: (elem: Element) => any,
+) {
+  if (typeof elems === 'string')
+    elems = document.querySelectorAll(elems);
+  
+  return groupBy<Element>(
+    elems as Iterable<Element>,
+    grouper
+  );
+
+};
+
 
 // <a> & href
 
@@ -163,7 +190,10 @@ const getRawRegExp = (s: string) => new RegExp(escapeRegExp(s));
 
 
 /* Object utils */
-// TODO: jsocd?
+
+const isArr = Array.isArray;
+const iterToArr = <T>(iter: Iterable<T>): T[] =>
+  isArr(iter) ? iter : [...iter];
 
 const objEx = (obj: any, ...keys: [any]) => {
   const res = {} as any;
@@ -177,12 +207,34 @@ const objMap = (
   funKey: Function = past,
   funVal: Function = past,
   funRes: Function = past,
-) => funRes((Array.isArray(obj) ? past : Object.entries)(obj).reduce( // @ts-ignore
-  (acc, [key, val]) => (void (acc[funKey(key)] = funVal(val)) || acc) // eslint-disable-next-line
-, {}));
+) => funRes((isArr(obj) ? past : Object.entries)(obj).reduce( // @ts-ignore
+  (acc, [key, val]) => (void (acc[funKey(key)] = funVal(val)) || acc), {}));
+
+const objPush = <T>(obj: any, key: keyof any, val: T) => {
+  obj[key] = isArr(obj[key])
+    ? obj[key].concat(val)
+    : [val];
+  return obj;
+};
+
+const groupBy = <T>(
+  iter: Iterable<T>,
+  func: (x: T) => keyof any
+) => (iterToArr(iter)).reduce((acc, el) => objPush(acc, func(el), el), {});
 
 // NOTE: `structuredClone` lacks browser (& older node) support
 const jsonClone = (obj: {}) => JSON.parse(JSON.stringify(obj));
+
+
+/* Math */
+
+const { abs, min, pow, sqrt } = Math;
+const sqrd = (x: number) => pow(x, 2);
+const dist = (...ds: number[]) => sqrt(ds.reduce(
+  (a, d) => a + sqrd(d), 0
+));
+
+const absMin = mapperReduce(min, abs);
 
 
 /* Misc */
@@ -192,9 +244,12 @@ const past = x => x;
 
 
 export {
+  dist,
   past,
   objEx,
+  absMin,
   objMap,
+  groupBy,
   objExer,
   getQuery,
   isClient,
@@ -204,5 +259,6 @@ export {
   getRawRegExp,
   applyToNodes,
   elemIsHidden,
+  getGroupedElems,
   getInboundAElemPath,
 };
