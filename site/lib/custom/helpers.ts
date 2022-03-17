@@ -192,6 +192,7 @@ const getRawRegExp = (s: string) => new RegExp(escapeRegExp(s));
 /* Object utils */
 
 const isArr = Array.isArray;
+const toArr = (x: any) => isArr(x) ? x : [x];
 const iterToArr = <T>(iter: Iterable<T>): T[] =>
   isArr(iter) ? iter : [...iter];
 
@@ -252,6 +253,7 @@ export {
   dist,
   past,
   upTo,
+  toArr,
   objEx,
   absMin,
   objMap,
@@ -260,6 +262,7 @@ export {
   getQuery,
   isClient,
   jsonClone,
+  hrefToPath,
   addOnVisible,
   escapeRegExp,
   getRawRegExp,

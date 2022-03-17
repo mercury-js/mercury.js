@@ -25,6 +25,9 @@ import {
   useIsomorphicLayoutEffect,
 } from './hooks';
 
+import { isOnTouchable } from '@lib/custom/device-detection';
+import { trackLinksClosestToMouse } from '@lib/custom/mouse-heuristics';
+
 import type {
   Router,
   NextPage,
@@ -34,6 +37,8 @@ import type {
 import { getPageData, dropLocale } from './helpers';
 
 import {
+  toArr,
+  hrefToPath,
   addOnVisible,
   applyToNodes,
   getInboundAElemPath,
@@ -190,30 +195,33 @@ export default function AppPagePrerenderer({
 
   
   // NOTE: need by ref for listener(s)
-  const fetchedPathProps = useRef<PageData>({});  
+  const fetchedPathProps = useRef<PageData>({});
 
   // TODO: outline? (think SOC & mutability, if needs other states)
   const [prerenderedPaths, dispatchPrerenderedPaths] = useReducer((
     state: Array<string>,
     action:
       // TODO: others (+ better replacement logic)?
-      { type: 'add'; payload: { path: string }; } | 
+      { type: 'add'; payload: { paths: string | string[] }; } |
       { type: 'clear' }
   ): Array<string> => {
     switch (action.type) {
       case 'add': {
-        const { payload: { path } } = action;
-        if (state.includes(path))
-          return state; // already prerendered
-        // TODO: smarter replacement logic?
+        const { payload: { paths } } = action;
         const newState = [...state]; // copy
-        if (state.length >= nMaxPrerender) {
-          const replaceAt = state.findIndex(
-            path => (path !== router.asPath)
-          ); // any path but current one
-          newState.splice(replaceAt, 1);
-        } // always append for fresh
-        return newState.concat(path);
+        toArr(paths).forEach(path => {
+          if (newState.includes(path))
+            return; // already prerendered
+          // TODO: smarter replacement logic?
+          if (newState.length >= nMaxPrerender) {
+            const replaceAt = newState.findIndex(
+              path => (path !== router.asPath)
+            ); // any path but current one
+            newState.splice(replaceAt, 1);
+          } // always append for fresh
+          newState.push(path);
+        });
+        return newState;
       };
       case 'clear':
         return [];
@@ -229,6 +237,16 @@ export default function AppPagePrerenderer({
   // and `isPending` indicator is not needed (for background work)
   // const [isPending, startTransition] = useTransition();
 
+  const prerenderPathsNonUrgently = useCallback((
+    paths: string | string[]
+  ) => startTransition(() => {
+    // NOTE: reducer ensures that
+    // current path is not replaced
+    dispatchPrerenderedPaths({
+      type: 'add',
+      payload: { paths }
+    });
+  }), []);
 
   useEffect(() => {
 
@@ -250,22 +268,50 @@ export default function AppPagePrerenderer({
         );
       });
 
-      const prerenderPathNonUrgently = () => startTransition(() => {
-        // NOTE: reducer ensures that current path is not replaced
-        dispatchPrerenderedPaths({
-          type: 'add',
-          payload: { path }
-        });
-      });
-      
       // TODO: (pointer) heuristic (smart too)
       // have page props injected to component
-      aElem.addEventListener('pointerover', prerenderPathNonUrgently);
+      aElem.addEventListener(
+        'pointerover',
+        () => prerenderPathsNonUrgently(path)
+      );
     }, 'A'); // eslint-disable-next-line
     
   }, []);
 
-  
+  /* TODO: ?
+   - rethink logic
+   - limit prerendered paths by page ("shell" idea)
+     - note: trade-off between prerendering "too many"
+       (**memoized**) page components vs. rerendering on
+       shell prop changes (redo some work, but keep DOM cleaner)
+   - queue path addition (delay between)
+     - note: non-urgent rendering, so no problem?
+   - parameterize (props) hard-coded arguments below
+    - enabling
+    - intervalMs
+    - n closest (by path)
+    - etc
+   - optimize
+  */
+  useEffect(() => { // prerendering based on mouse heuristics
+    if (isOnTouchable()) return;
+    trackLinksClosestToMouse(grouped => {
+      const newPaths = [] as string[];
+      Object.values(grouped).forEach(pageAElems => {
+        // TODO: filter currently hovered links?
+        pageAElems.slice(0, 2).forEach(aElem => {
+          const path = hrefToPath(aElem.href);
+          // TODO: only check once (also checked in JSX)
+          // NOTE: fallback condition disallows pushing non-prerenderable
+          if (!asPage(path)) return;
+          newPaths.push(path);
+        });
+      });
+      prerenderPathsNonUrgently(newPaths);
+    }, 1000);
+  }, []);
+
+
   // NOTE:
   // - resizes responsive (image)
   //   containers before repaints
