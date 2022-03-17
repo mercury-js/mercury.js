@@ -217,10 +217,11 @@ const objPush = <T>(obj: any, key: keyof any, val: T) => {
   return obj;
 };
 
+type Grouped<T> = Record<keyof any, T[]>;
 const groupBy = <T>(
   iter: Iterable<T>,
   func: (x: T) => keyof any
-) => (iterToArr(iter)).reduce((acc, el) => objPush(acc, func(el), el), {});
+): Grouped<T> => (iterToArr(iter)).reduce((acc, el) => objPush(acc, func(el), el), {});
 
 // NOTE: `structuredClone` lacks browser (& older node) support
 const jsonClone = (obj: {}) => JSON.parse(JSON.stringify(obj));
@@ -239,6 +240,10 @@ const absMin = mapperReduce(min, abs);
 
 /* Misc */
 
+const upTo = (x: string | any[], sep: any, reverse=false) => x.slice( // @ts-ignore
+  0, x[`${reverse ? 'lastI' : 'i'}ndexOf`](sep)
+);
+
 //@ts-ignore
 const past = x => x;
 
@@ -246,6 +251,7 @@ const past = x => x;
 export {
   dist,
   past,
+  upTo,
   objEx,
   absMin,
   objMap,
@@ -261,4 +267,8 @@ export {
   elemIsHidden,
   getGroupedElems,
   getInboundAElemPath,
+};
+
+export type {
+  Grouped,
 };
