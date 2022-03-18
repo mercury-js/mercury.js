@@ -21,6 +21,7 @@ import {
 } from 'react';
 
 import {
+  useBindRef,
   useReRenderEffect,
   useIsomorphicLayoutEffect,
 } from './hooks';
@@ -79,8 +80,16 @@ import {
  * 
  * @note
  * - To be used inside a custom `App`
- * - Each page ought to use `getServerSideProps` (check out Next.js docs;
+ * - Each page ought to use `getServerSideProps` (see Next.js docs;
  *   with React 18 Static Site Generation's not supported **for now**)
+ * - Does not support Server Components. Consider moving any logic that
+ *   you want to run on the server (and be excluded from the bundle) to
+ *   the page's `getServerSideProps` (which are prefetched for links in
+ *   the user's viewport). However, when deciding whether to run the
+ *   logic on the server or the client, do keep in mind that the UX
+ *   effects are minimized with React 18 Concurrent Features and
+ *   memoization, when prerendering components on the client, and that
+ *   the work is naturally done in advance in the background.
  * 
  * @example
  * // see `./pages/_app.js`
@@ -108,6 +117,7 @@ export default function AppPagePrerenderer({
    * @example [ [ '/product/[slug]', ProductSlug ], ]
    * @note
    * - supports lazily (dynamically) imported components
+   * - does not support Server Components
    * - see also above notes on component description
    */
   pageComponents: Array<[ string, NextPage ]>;
@@ -230,6 +240,14 @@ export default function AppPagePrerenderer({
     }
   }, []);
 
+  // NOTE:
+  // - closure workaround  
+  // - to prevent extra rendering
+  const isPrerendered = useBindRef(
+    prerenderedPaths,
+    (prerenderedPaths, path: string) =>
+      prerenderedPaths.current.includes(path)
+  );
 
   // TODO: `useDeferredValue` instead?
   // NOTE: do not use this hook in production, since it comes with
@@ -249,7 +267,6 @@ export default function AppPagePrerenderer({
   }), []);
 
   useEffect(() => {
-
     applyToNodes(aElem => { // @ts-ignore
       let path = getInboundAElemPath(aElem) as string;
       if (!path) return;
@@ -270,12 +287,12 @@ export default function AppPagePrerenderer({
 
       // TODO: (pointer) heuristic (smart too)
       // have page props injected to component
-      aElem.addEventListener(
-        'pointerover',
-        () => prerenderPathsNonUrgently(path)
-      );
+      aElem.addEventListener('pointerover', () => {
+        // NOTE: condition prevents extra rendering
+        if (!isPrerendered(path))
+          prerenderPathsNonUrgently(path);
+      });
     }, 'A'); // eslint-disable-next-line
-    
   }, []);
 
   /* TODO: ?
@@ -301,13 +318,15 @@ export default function AppPagePrerenderer({
         // TODO: filter currently hovered links?
         pageAElems.slice(0, 2).forEach(aElem => {
           const path = hrefToPath(aElem.href);
-          // TODO: only check once (also checked in JSX)
-          // NOTE: fallback condition disallows pushing non-prerenderable
-          if (!asPage(path)) return;
-          newPaths.push(path);
+          if ( // TODO: only check once, also checked in ...
+            asPage(path) && // ... JSX (NOTE: fallback condition)
+            !isPrerendered(path) // ... reducer (NOTE: need ref)
+          ) newPaths.push(path);
         });
       });
-      prerenderPathsNonUrgently(newPaths);
+      // NOTE: condition prevents extra rendering
+      if (newPaths.length)
+        prerenderPathsNonUrgently(newPaths);
     }, 1000);
   }, []);
 

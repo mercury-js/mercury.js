@@ -11,7 +11,8 @@
 import {
   useRef,
   useEffect,
-  useLayoutEffect
+  useLayoutEffect,
+  MutableRefObject
 } from 'react';
 import {
   past,
@@ -38,6 +39,17 @@ const useReRenderEffect = (fun: Function, deps: any[]=[]) => {
   }, deps);
 };
 
+// NOTE: adds some overhead vs. just using a ref
+/** Binds a ref as function argument (closure workaround). */
+const useBindRef = <A, B, C>(
+  dep: A,
+  fun: (depRef: MutableRefObject<A>, ...args: B[]
+) => C) => {
+  const ref = useRef(dep);
+  useEffect(() => { ref.current = dep; }, [dep]);
+  return fun.bind(null, ref);
+};
+
 // NOTE: do add helpful note when using this
 const useIsomorphicLayoutEffect = isClient()
   ? useLayoutEffect
@@ -45,6 +57,7 @@ const useIsomorphicLayoutEffect = isClient()
 
 export {
   usePrev,
+  useBindRef,
   useReRenderEffect,
   useIsomorphicLayoutEffect
 };

@@ -11,8 +11,6 @@ const Noop: FC = ({ children }) => <>{children}</>
 
 import AppPagePrerenderer from '@components/custom/AppPagePrerenderer'
 
-import ProductSlug from './product/[slug]'
-import DesignerCat from './search/designers/[name]'
 
 export default function MyApp({
   Component, pageProps, router
