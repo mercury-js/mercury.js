@@ -253,6 +253,7 @@ export {
   dist,
   past,
   upTo,
+  isArr,
   toArr,
   objEx,
   absMin,

@@ -22,22 +22,29 @@ import {
 
 import {
   useBindRef,
-  useReRenderEffect,
+  useRerender,
+  useRerenderEffect,
   useIsomorphicLayoutEffect,
 } from './hooks';
 
 import { isOnTouchable } from '@lib/custom/device-detection';
-import { trackLinksClosestToMouse } from '@lib/custom/mouse-heuristics';
+import {
+  trackLinksClosestToMouse,
+  MouseHeuristicsOptions,
+} from '@lib/custom/mouse-heuristics';
 
-import type {
+import {
   Router,
   NextPage,
   PageData,
+  replaceSlugs,
   PageDataFetcher,
+  PageDataFetchResult,
 } from './helpers';
 import { getPageData, dropLocale } from './helpers';
 
 import {
+  isArr,
   toArr,
   hrefToPath,
   addOnVisible,
@@ -110,6 +117,7 @@ export default function AppPagePrerenderer({
   resetDataOnLocaleChange=true,
   resizeOnPathChange=true,
   pageDataFetcher=getPageData,
+  mouseHeuristicsOptions={},
 }: {
   /**
    * Page paths (incl. slugs) to (page) components
@@ -189,11 +197,20 @@ export default function AppPagePrerenderer({
    *     (same file)
    */
   pageDataFetcher?: PageDataFetcher;
+  /**
+   * Optional mouse heuristics based prerendering
+   * decision configuration. Ignored on mobile.
+   * Pass `false` to disable altogether.
+   * @see trackLinksClosestToMouse
+   */
+  mouseHeuristicsOptions?: Omit<
+    MouseHeuristicsOptions, 'includedPathPrefixes'
+  > | false
 }) {
 
   const [pageComponents] = useState<Record<string, NextPage>>(Object
     .fromEntries(_pageComponents.map(([ page, Component ]) => [
-      page.replaceAll(/\[.*?\]/g, '.*?'), // to match paths w/ slugs
+      replaceSlugs(page, '.*?'), // to match paths w/ slugs
       memo(Component), // to prevent excess rendering of prerendered
     ]))
   );
@@ -206,6 +223,34 @@ export default function AppPagePrerenderer({
   
   // NOTE: need by ref for listener(s)
   const fetchedPathProps = useRef<PageData>({});
+
+  const forceRerender = useRerender();
+
+  const fetchPageData = useCallback((
+    paths: string | string[],
+    callback: (  
+      res: PromiseSettledResult<
+        PageDataFetchResult
+      >[]
+    ) => void = () => {},
+    // NOTE: `fetchedPathProps` `useRef`, so may want to force rerender
+    // on successful (re)fetch without a custom `callback` (runs first)
+    rerenderOnFetch=false
+  ) => {
+    // TODO: allow unbatching? (NOTE: vs. un/batching "transitions")
+    Promise.allSettled(toArr(paths).map(path => pageDataFetcher(
+      // NOTE: `router` by reference,
+      // (`fetchedPathProps` as well)
+      path, router, fetchedPathProps,
+    ))).then(results => {
+      callback(results);
+      if (
+        rerenderOnFetch &&
+        // @ts-ignore (optional chaining ensures rejected is falsy too)
+        results.some(result => result.value?.didFetch)
+      ) forceRerender();
+    }); /* router is ref and so not dep */ // eslint-disable-next-line
+  }, [pageDataFetcher]);
 
   // TODO: outline? (think SOC & mutability, if needs other states)
   const [prerenderedPaths, dispatchPrerenderedPaths] = useReducer((
@@ -256,15 +301,21 @@ export default function AppPagePrerenderer({
   // const [isPending, startTransition] = useTransition();
 
   const prerenderPathsNonUrgently = useCallback((
-    paths: string | string[]
-  ) => startTransition(() => {
+    _paths: string | string[],
+    // NOTE: for now do batch transitions for a single rerender
+    // TODO: follow changes to transition batching orchestration by
+    // React 18 and revisit this decision
+    unbatch=false,
+  ) => (
+    unbatch && isArr(_paths) ? _paths : [_paths]
+  ).forEach(paths => startTransition(() => {
     // NOTE: reducer ensures that
     // current path is not replaced
     dispatchPrerenderedPaths({
       type: 'add',
       payload: { paths }
     });
-  }), []);
+  })), []);
 
   useEffect(() => {
     applyToNodes(aElem => { // @ts-ignore
@@ -277,13 +328,7 @@ export default function AppPagePrerenderer({
       // @ts-ignore
       // prefetch page props for a
       // link that enters viewport
-      addOnVisible(aElem, () => {
-        pageDataFetcher(
-          // NOTE: `router` by reference,
-          // (`fetchedPathProps` as well)
-          path, router, fetchedPathProps,
-        );
-      });
+      addOnVisible(aElem, () => fetchPageData(path));
 
       // TODO: (pointer) heuristic (smart too)
       // have page props injected to component
@@ -295,39 +340,51 @@ export default function AppPagePrerenderer({
     }, 'A'); // eslint-disable-next-line
   }, []);
 
-  /* TODO: ?
+  /* TODO:?
    - rethink logic
    - limit prerendered paths by page ("shell" idea)
      - note: trade-off between prerendering "too many"
        (**memoized**) page components vs. rerendering on
        shell prop changes (redo some work, but keep DOM cleaner)
-   - queue path addition (delay between)
-     - note: non-urgent rendering, so no problem?
-   - parameterize (props) hard-coded arguments below
-    - enabling
-    - intervalMs
-    - n closest (by path)
-    - etc
    - optimize
   */
   useEffect(() => { // prerendering based on mouse heuristics
-    if (isOnTouchable()) return;
+    if (
+      isOnTouchable() || // no mouse
+      !mouseHeuristicsOptions // disabled
+    ) return;
+
     trackLinksClosestToMouse(grouped => {
       const newPaths = [] as string[];
       Object.values(grouped).forEach(pageAElems => {
-        // TODO: filter currently hovered links?
-        pageAElems.slice(0, 2).forEach(aElem => {
-          const path = hrefToPath(aElem.href);
-          if ( // TODO: only check once, also checked in ...
+        pageAElems.forEach(aElem => {
+          const path = dropLocale(hrefToPath(aElem.href));
+          if ( // TODO: only check (max) once, also checked in ...
             asPage(path) && // ... JSX (NOTE: fallback condition)
             !isPrerendered(path) // ... reducer (NOTE: need ref)
           ) newPaths.push(path);
         });
       });
-      // NOTE: condition prevents extra rendering
+      // NOTE:
+      // - condition prevents extra rendering
+      // - async callback ensures that data for any
+      //   path has been fetched before rerendering
+      //   (NOTE: batched for a single rerendering)
+      //   (TODO: should never prerender links outside of viewport?)
       if (newPaths.length)
-        prerenderPathsNonUrgently(newPaths);
-    }, 1000);
+        fetchPageData(newPaths, () =>
+          // NOTE: **not** unbatched (transitions)
+          prerenderPathsNonUrgently(newPaths, false)
+        );
+    }, { ...mouseHeuristicsOptions,
+      // NOTE: assumes max one slug at end
+      // TODO: support multiple slugs?
+      // TODO: not use before adding locale support
+      // includedPathPrefixes: _pageComponents.map(
+      //   ([path]) => replaceSlugs(path, '')
+      // )
+    });
+    /* no deps to attach only once */ // eslint-disable-next-line
   }, []);
 
 
@@ -347,7 +404,7 @@ export default function AppPagePrerenderer({
   // control? (probably overkill and -head)
   // const prevRouter = usePrev(router, true);
   // NOTE: runs twice in React strictMode dev
-  useReRenderEffect(() => { // after 1st render
+  useRerenderEffect(() => { // after 1st render
     if (resetDataOnLocaleChange) {
       fetchedPathProps.current = {};
       dispatchPrerenderedPaths({ type: 'clear' });

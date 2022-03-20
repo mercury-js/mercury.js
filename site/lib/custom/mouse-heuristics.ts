@@ -27,6 +27,10 @@ const onMouseMove = (evt: MouseEvent) => ({
 
 type RelativeToElem = 'center' | 'closest' | undefined;
 
+// NOTE: param distances always elem - mouse, d0 top/left-most
+const _minDist = (d0: number, d1: number) =>
+  d0 < 0 && d1 > 0 ? 0 : absMin(d0, d1);
+
 function getMouseDistance(
   elem: Element,
   relativeTo: RelativeToElem
@@ -42,8 +46,8 @@ function getMouseDistance(
       dy += rect.height / 2;
       break;
     case 'closest':
-      dx = absMin(dx, rect.right  - xMouse);
-      dy = absMin(dy, rect.bottom - yMouse);
+      dx = _minDist(dx, rect.right  - xMouse);
+      dy = _minDist(dy, rect.bottom - yMouse);
       break;
   }
 
@@ -59,37 +63,96 @@ function getMouseDistance(
 function getClosestToMouse(
   elems: string | Element[] | NodeList,
   grouper: (elem: Element) => any,
+  maxDistancePx=0,
+  nClosestPerGroup=0, // NOTE: >0 will sort
   relativeTo: RelativeToElem = 'closest',
 ) {
-  // TODO: optimize?
-  // - n closest: reduce vs. sort
-  // - query select elems only once, store and add added
-  const grouped = getGroupedElems(elems, grouper); // @ts-ignore
-  const _gmd = a => getMouseDistance(a, relativeTo);
-  // TODO: (param) filter out if mouse is **on** link?
-  Object.values(grouped).forEach(elemArr => elemArr.sort(
-    (a, b) => _gmd(a) - _gmd(b)
-  ));
+  // TODO: query select elems once & mutate groups?
+  const grouped = getGroupedElems(elems, grouper);
+  
+  const _distance = (
+    elem: Element
+  ) => getMouseDistance(elem, relativeTo);
+  
+  // NOTE: must return modified group (in-place is OK)
+  const _modifyEachGroup = (
+    func: (group: Element[]) => Element[]
+  ) => Object.entries(grouped).forEach(([ key, group ]) => {
+    grouped[key] = func(group);
+  });
+
+  // NOTE:
+  // - separate passes over groups
+  // - filter first
+  
+  if (maxDistancePx) _modifyEachGroup(group => group
+    .filter(elem => _distance(elem) <= maxDistancePx)
+  );
+
+  if (nClosestPerGroup) _modifyEachGroup(group => group
+    .sort((a, b) => _distance(a) - _distance(b))
+    .slice(0, nClosestPerGroup)
+  );
+
   return grouped;
 };
+
+
+// TODO: split and intersect for `getClosestToMouse`?
+const MOUSE_HEURISTICS_OPTIONS = {
+  intervalMs: 1000,
+  groupByPage: true,
+  maxDistancePx: 100,
+  nClosestPerGroup: 2, // >0 will sort
+  includedPathPrefixes: ['/'],
+};
+
+export type MouseHeuristicsOptions = Partial<
+  typeof MOUSE_HEURISTICS_OPTIONS
+>;
 
 // TODO: generalize?
 /**
  * @note Assumes all inbound links have root-relative hrefs
  *   (for example "/product/sneakers")
+ * @param mouseHeuristicsOptions - Merged with
+ *     {@link MOUSE_HEURISTICS_OPTIONS defaults}.
  * @see getClosestToMouse
- * @param callback
- * @param intervalMs
  */
 function trackLinksClosestToMouse(
   callback: (grp: Grouped<HTMLAnchorElement>) => void,
-  intervalMs=250,
-) {
-  // TODO: filter by href attribute (absolute) instead?
+  mouseHeuristicsOptions: MouseHeuristicsOptions,
+) {  
+  const {
+    intervalMs,
+    groupByPage,
+    maxDistancePx,
+    nClosestPerGroup,
+    includedPathPrefixes,
+  } = Object.assign({},
+    MOUSE_HEURISTICS_OPTIONS,
+    mouseHeuristicsOptions
+  );
+  
+  // TODO:?
+  // - filter by href attribute (absolute) instead
+  // - multiple slugs
+  // - optimize
   window.addEventListener('mousemove', onMouseMove);
-  setInterval(() => { callback( // @ts-ignore // TODO: multiple slugs?
-    getClosestToMouse('a[href^="/"]', a => upTo(a.href, '/', true), 'closest')
-  ); }, intervalMs);
+  const selector = includedPathPrefixes
+    .map(p => `a[href^="${p}"]`)
+    .join(',');
+  const grouper = groupByPage
+    ? (a: any) => upTo(a.href, '/', true)
+    : () => ''; // all-in-one (key)
+  // @ts-ignore (we know we'll have groups of <a>)
+  setInterval(() => { callback(getClosestToMouse(
+    selector,
+    grouper,
+    maxDistancePx,
+    nClosestPerGroup,
+    'closest'
+  )); }, intervalMs);
 }
 
 export {

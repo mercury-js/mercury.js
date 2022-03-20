@@ -10,6 +10,7 @@
 
 import {
   useRef,
+  useState,
   useEffect,
   useLayoutEffect,
   MutableRefObject
@@ -31,7 +32,7 @@ const usePrev = (val: any, clone=false) => {
 
 // NOTE: runs twice in React strictMode dev
 /** `useEffect` that runs on every render but the first one. */
-const useReRenderEffect = (fun: Function, deps: any[]=[]) => {
+const useRerenderEffect = (fun: Function, deps: any[]=[]) => {
   const ref = useRef(0);
   useEffect(() => {
     if ((ref.current)) fun();
@@ -50,6 +51,9 @@ const useBindRef = <A, B, C>(
   return fun.bind(null, ref);
 };
 
+/** Forces a rerender. */
+const useRerender = () => (f => () => f(b => ++b))(useState(0)[1]);
+
 // NOTE: do add helpful note when using this
 const useIsomorphicLayoutEffect = isClient()
   ? useLayoutEffect
@@ -58,6 +62,7 @@ const useIsomorphicLayoutEffect = isClient()
 export {
   usePrev,
   useBindRef,
-  useReRenderEffect,
+  useRerender,
+  useRerenderEffect,
   useIsomorphicLayoutEffect
 };

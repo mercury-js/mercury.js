@@ -46,6 +46,8 @@ const dropLocale: (path: string) => string = LOCALES.length
   ? path => path.replace(REGEXP_LOCALE, '/')
   : path => path;
 
+const replaceSlugs = (path: string, replaceWith: string) =>
+  path.replaceAll(/\[.*?\]/g, replaceWith);
 
 // TODO: spin-off interface/type file?
 
@@ -62,13 +64,18 @@ type PageData = Record<string, {
     Partial<RouterSnapshot>
   ); 
   meta?: {};
-}>
+}>;
 
-interface PageDataFetcher { (
+interface PageDataFetchResult {
+  path: string;
+  didFetch: boolean;
+};
+
+interface PageDataFetcher {(
   path: string,
   router: Router,
   pageDataRef: MutableRefObject<PageData>
-): void | Promise<void> }
+): Promise<PageDataFetchResult>};
 
 
 /**
@@ -128,9 +135,9 @@ const getPageData: PageDataFetcher = async (
      change by default)
   */
   path = dropLocale(path);
+  if (path in pageDataRef.current) return { path, didFetch: false };
   // TODO: need to handle query (search & slugs)? (`useRouter` has them)
   const apiPath = `/_next/data/${BUILD_ID}/${router.locale}${path}.json`;
-  if (path in pageDataRef.current) return; // NOTE: static
 
   // TODO: make use of, too?
   // NOTE: prevents multiple (async) requests to same endpoint
@@ -146,7 +153,7 @@ const getPageData: PageDataFetcher = async (
     });
 
   pageDataRef.current[path].data = pageProps;
-  // return pageProps; // why not
+  return { path, didFetch: true };
 };
 
 
@@ -176,6 +183,7 @@ export {
   properMemo,
   getPageData,
   setStateKey,
+  replaceSlugs,
 };
 
 export type {
@@ -184,4 +192,5 @@ export type {
   PageData,
   RouterSnapshot,
   PageDataFetcher,
+  PageDataFetchResult,
 };
