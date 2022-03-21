@@ -155,7 +155,7 @@ function getGroupedElems(
 
 // NOTE: captures lead/trailing slash
 const REGEXP_HREF_PATH = /(^https?:\/\/.*?(\/|$))|(^\/)|(\/$)|(\?.*)/g;
-const hrefToPath = (href: string, prefix='/') => prefix + href.replaceAll(
+const hrefToPath = (href: string, prefix='/') => prefix + href.replace(
   REGEXP_HREF_PATH, ''
 );
 
@@ -185,7 +185,7 @@ const getQuery = (url: string) => (
 /* RegExp (general) */
 
 const REGEXP_ESCAPE = /[.*+?^${}()|[\]\\]/g;
-const escapeRegExp = (s: string) => s.replaceAll(REGEXP_ESCAPE, '\\$&');
+const escapeRegExp = (s: string) => s.replace(REGEXP_ESCAPE, '\\$&');
 const getRawRegExp = (s: string) => new RegExp(escapeRegExp(s));
 
 
