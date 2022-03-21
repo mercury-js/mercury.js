@@ -47,7 +47,7 @@ const dropLocale: (path: string) => string = LOCALES.length
   : path => path;
 
 const replaceSlugs = (path: string, replaceWith: string) =>
-  path.replaceAll(/\[.*?\]/g, replaceWith);
+  path.replace(/\[.*?\]/g, replaceWith);
 
 // TODO: spin-off interface/type file?
 
