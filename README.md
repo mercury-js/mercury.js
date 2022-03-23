@@ -105,3 +105,10 @@ For example: Turning `cart` off will disable Cart capabilities.
 5. Add proper store values to `site/.env.local`
 6. Run `cd site` and `yarn dev` to build and watch for code changes
 7. Run `yarn turbo run build` to check the build after your changes
+
+<br><br>
+<hr>
+<br><br>
+
+## Notes on Deployment & Environment
+- tested on Node.js v14.19.1

@@ -24,6 +24,9 @@ const mapperReduce = <T>(
 /* Env */
 
 const isClient = () => typeof window !== 'undefined';
+const isProductionClient = () => isClient() && !(h => (
+  (h === 'localhost' || h === '127.0.0.1')
+))(window.location.hostname);
 
 
 /* DOM */
@@ -270,6 +273,7 @@ export {
   applyToNodes,
   elemIsHidden,
   getGroupedElems,
+  isProductionClient,
   getInboundAElemPath,
 };
 

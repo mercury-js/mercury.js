@@ -47,7 +47,7 @@ module.exports = withCommerceConfig({
     reactRoot: true,
     // TODO: try edge
     runtime: 'nodejs',
-    serverComponents: true,
+    // serverComponents: true,
 
   },
 

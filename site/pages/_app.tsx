@@ -10,7 +10,7 @@ import { ManagedUIContext } from '@components/ui/context'
 const Noop: FC = ({ children }) => <>{children}</>
 
 import AppPagePrerenderer from '@components/custom/AppPagePrerenderer'
-
+import { reroutePageDataFetchesInProd } from '@lib/custom/monkey-patches'
 
 export default function MyApp({
   Component, pageProps, router
@@ -19,6 +19,8 @@ export default function MyApp({
 
   useEffect(() => {
     document.body.classList?.remove('loading')
+    // NOTE: check suitability
+    reroutePageDataFetchesInProd()
   }, [])
 
   return (
