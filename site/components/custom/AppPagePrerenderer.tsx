@@ -265,8 +265,10 @@ export default function AppPagePrerenderer({
         const { payload: { paths } } = action;
         const newState = [...state]; // copy
         toArr(paths).forEach(path => {
-          if (newState.includes(path))
-            return; // already prerendered
+          if (
+            path === router.asPath || // current page (initial load)
+            newState.includes(path) // already prerendered
+          ) return;
           // TODO: smarter replacement logic?
           if (newState.length >= nMaxPrerender) {
             const replaceAt = newState.findIndex(
