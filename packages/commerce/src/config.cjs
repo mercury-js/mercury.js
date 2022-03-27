@@ -1,7 +1,3 @@
-/**
- * This file is expected to be used in next.config.js only
- */
-
 const path = require('path')
 const merge = require('deepmerge')
 const importCwd = require('import-cwd')
@@ -9,23 +5,24 @@ const importCwd = require('import-cwd')
 function withCommerceConfig(nextConfig = {}) {
   const commerce = nextConfig.commerce || {}
   const { provider } = commerce
+  const newProvider = provider.split('-')[1];
 
-  if (!provider) {
+  if (!newProvider) {
     throw new Error(
       `The commerce provider is missing, please add a valid provider name`
     )
   }
 
-  const commerceNextConfig = importCwd(path.join(provider, 'next.config'))
+  process.chdir("../");
+  process.chdir("./packages")
+  const commerceNextConfig = importCwd(path.join(process.cwd(),newProvider,'src', 'next.config.cjs'));
   const config = merge(nextConfig, commerceNextConfig)
-  const features = merge(
-    config.commerce.features,
-    config.commerce[provider]?.features ?? {}
-  )
-
+  process.chdir("../");
+  process.chdir("./site");
+  
   config.env = config.env || {}
 
-  Object.entries(features).forEach(([k, v]) => {
+  Object.entries(config.commerce.features).forEach(([k, v]) => {
     if (v) config.env[`COMMERCE_${k.toUpperCase()}_ENABLED`] = true
   })
 

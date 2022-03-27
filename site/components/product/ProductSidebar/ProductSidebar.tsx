@@ -1,8 +1,9 @@
-import s from './ProductSidebar.module.css'
+import style from './ProductSidebar.module.css'
 import { useAddItem } from '@framework/cart'
 import { FC, useEffect, useState } from 'react'
 import { ProductOptions } from '@components/product'
 import type { Product } from '@commerce/types/product'
+import SIZES from '@components/ui/CollectionCard'
 import { Button, Text, Rating, Collapse, useUI } from '@components/ui'
 import {
   getProductVariant,
@@ -16,6 +17,7 @@ interface ProductSidebarProps {
 }
 
 const ProductSidebar: FC<ProductSidebarProps> = ({ product, className }) => {
+  console.log('className', className)
   const addItem = useAddItem()
   const { openSidebar } = useUI()
   const [loading, setLoading] = useState(false)
@@ -42,25 +44,30 @@ const ProductSidebar: FC<ProductSidebarProps> = ({ product, className }) => {
 
   return (
     <div className={className}>
+      <div className={style.basicInfoContainer}>
+        <p className={style.productVendor}>{product.vendor}</p>
+        <p className={style.productName}>{product.name}</p>
+        <p className={style.productPrice}>{product.price.currencyCode} {product.price.value}</p>
+      </div>
+      <div className="flex flex-row justify-between items-center mb-8">
+        <Rating value={4} />
+        <div className="text-accent-6 pr-1 font-medium text-sm">42 reviews</div>
+      </div>
+
+      <div className={style.productDescription} dangerouslySetInnerHTML={{__html: product.descriptionHtml || product.description}}></div>
+      
       <ProductOptions
         options={product.options}
         selectedOptions={selectedOptions}
         setSelectedOptions={setSelectedOptions}
       />
-      <Text
-        className="pb-4 break-words w-full max-w-xl"
-        html={product.descriptionHtml || product.description}
-      />
-      <div className="flex flex-row justify-between items-center">
-        <Rating value={4} />
-        <div className="text-accent-6 pr-1 font-medium text-sm">36 reviews</div>
-      </div>
+
       <div>
         {process.env.COMMERCE_CART_ENABLED && (
           <Button
             aria-label="Add to Cart"
             type="button"
-            className={s.button}
+            className={style.button}
             onClick={addToCart}
             loading={loading}
             disabled={variant?.availableForSale === false}

@@ -1,0 +1,35 @@
+.filterHeader {
+    @apply font-bold text-sm capitalize;
+}
+
+.show {
+    @apply flex;
+}
+
+.hide {
+    @apply hidden;
+}
+
+.filtersContainer {
+    @apply flex-row mt-2;
+}
+
+.filterContainer {
+    @apply py-4 px-8 border overflow-auto max-h-60;
+}
+
+.filterToggle {
+    @apply py-2 px-6 border max-w-fit cursor-pointer;
+}
+
+.alternativeContainer {
+    @apply flex my-1;
+}
+
+.alternativeLabel {
+    @apply flex items-center text-sm text-gray-700
+}
+
+.alternativeInput {
+    @apply mr-1
+}

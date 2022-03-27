@@ -1,4 +1,8 @@
 export { default as Hero } from './Hero'
+export { default as HeroAlt } from './HeroAlt'
+export { default as HeroCard } from './HeroCard'
+export { default as CollectionCard } from './CollectionCard'
+export { default as ProductFilters } from './ProductFilters'
 export { default as Logo } from './Logo'
 export { default as Grid } from './Grid'
 export { default as Button } from './Button'

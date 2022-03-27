@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import type { Page } from '@commerce/types/page'
 import getSlug from '@lib/get-slug'
-import { Github, Vercel } from '@components/icons'
+import { Github, Mercury } from '@components/icons'
 import { Logo, Container } from '@components/ui'
 import { I18nWidget } from '@components/common'
 import s from './Footer.module.css'
@@ -33,10 +33,9 @@ const Footer: FC<Props> = ({ className, pages }) => {
           <div className="col-span-1 lg:col-span-2">
             <Link href="/">
               <a className="flex flex-initial items-center font-bold md:mr-24">
-                <span className="rounded-full border border-accent-6 mr-2">
+                <span className="mr-2">
                   <Logo />
                 </span>
-                <span>ACME</span>
               </a>
             </Link>
           </div>
@@ -55,35 +54,44 @@ const Footer: FC<Props> = ({ className, pages }) => {
           </div>
           <div className="col-span-1 lg:col-span-2 flex items-start lg:justify-end text-primary">
             <div className="flex space-x-6 items-center h-10">
-              <a
-                className={s.link}
-                aria-label="Github Repository"
-                href="https://github.com/vercel/commerce"
-              >
-                <Github />
-              </a>
               <I18nWidget />
             </div>
           </div>
         </div>
-        <div className="pt-6 pb-10 flex flex-col md:flex-row justify-between items-center space-y-4 text-accent-6 text-sm">
-          <div>
-            <span>&copy; 2020 ACME, Inc. All rights reserved.</span>
+        <div className="pt-6 pb-10 flex flex-col md:flex-row justify-between items-center text-accent-6 text-sm">
+          <div className="mb-2 md:mb-0">
+            <span>&copy; 2022 ACME, Inc. All rights reserved.</span>
           </div>
-          <div className="flex items-center text-primary text-sm">
-            <span className="text-primary">Created by</span>
-            <a
-              rel="noopener noreferrer"
-              href="https://vercel.com"
-              aria-label="Vercel.com Link"
-              target="_blank"
-              className="text-primary"
-            >
-              <Vercel
-                className="inline-block h-6 ml-3 text-primary"
-                alt="Vercel.com Logo"
-              />
-            </a>
+          <div className="flex flex-col items-center md:items-end content-center text-primary text-sm">
+            <div className="flex mb-2 items-center">
+              <span className="text-gray-700 mr-1">Powered by</span>
+                <a
+                  rel="noopener noreferrer"
+                  href="https://github.com/mercury-js/mercury.js"
+                  aria-label="Mercury.js Link"
+                  target="_blank"
+                  className="text-primary"
+                >
+                  <Mercury
+                    className="inline-block h-6 ml-3 text-primary"
+                    alt="MercuryJS Logo"
+                    width="88px"
+                    height="33px"
+                  />
+                  </a>
+            </div>
+
+
+              <div>
+                <a
+                  className={s.link}
+                  aria-label="Mercury.js Github Repository"
+                  href="https://github.com/mercury-js/mercury.js"
+                >
+                  <Github />
+                </a>
+              </div>
+            
           </div>
         </div>
       </Container>

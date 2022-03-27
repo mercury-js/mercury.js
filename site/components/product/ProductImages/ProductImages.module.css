@@ -1,0 +1,15 @@
+.mainImageContainer {
+    @apply w-full flex justify-center mt-8
+}
+
+.thumbnailImagesContainer {
+    @apply flex mt-4 justify-center
+}
+
+.thumbnailContainer {
+    @apply flex mx-2 p-1 cursor-pointer box-border border-2 border-transparent
+}
+
+.selected {
+    @apply border-2 border-blue
+}

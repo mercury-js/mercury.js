@@ -8,7 +8,40 @@ export const productConnectionFragment = /* GraphQL */ `
       node {
         id
         title
+        productType
         vendor
+        options {
+          id
+          name
+          values
+        }
+        variants(first: 250) {
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+          }
+          edges {
+            node {
+              id
+              title
+              sku
+              availableForSale
+              requiresShipping
+              selectedOptions {
+                name
+                value
+              }
+              priceV2 {
+                amount
+                currencyCode
+              }
+              compareAtPriceV2 {
+                amount
+                currencyCode
+              }
+            }
+          }
+        }
         handle
         priceRange {
           minVariantPrice {

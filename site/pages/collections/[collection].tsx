@@ -1,0 +1,90 @@
+import { getSearchStaticProps } from '@lib/search-props'
+import type { GetStaticPropsContext } from 'next'
+import { Grid, Container, ProductFilters } from '@components/ui'
+import { Layout } from '@components/common'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
+import { useState, useEffect } from 'react'
+
+import useSearch from '@framework/product/use-search'
+
+import style from './Collection.module.css'
+
+import {
+  filterQuery,
+  getCategoryPath,
+  getDesignerPath,
+  useSearchMeta,
+} from '@lib/search'
+
+import type { Product } from '@commerce/types/product'
+import { useFilter } from '@lib/hooks/useFilter'
+
+export async function getServerSideProps(context: GetStaticPropsContext) {
+  const props = await getSearchStaticProps(context)
+
+  return { props: props.props }
+}
+
+const CollectionPage = ({ categories, brands }) => {
+
+  const [productData, setProductData] = useState([])
+
+  const router = useRouter()
+  const { asPath, locale } = router
+  const { q, sort } = router.query
+
+  const { pathname, category, brand } = useSearchMeta(asPath)
+
+  const currentCategory = categories.find((cat: any) => cat.slug === category)
+
+  const { data } = useSearch({
+    categoryId: currentCategory?.id,
+    locale,
+  })
+
+  useEffect(() => {
+    console.log(data?.products)
+    setProductData(data?.products)
+  }, [data]);
+
+  const { filteredProducts, currentFilters, setCurrentFilters } = useFilter(productData)
+
+  return (
+      <Container className={style.root}>
+
+      <div className={style.collectionSelectorOuter}>
+        <div className={style.collectionSelectorInner}>
+          {categories.map(category => {
+            return (
+              <Link href={`/collections/${category.slug}`}>
+                <a className={category?.slug === currentCategory?.slug ? style.selectedCollection : ''}>{category.name}</a>  
+              </Link>  
+            )
+          })}
+        </div>
+      </div>
+      <Container className={style.resultsContainerOuter}>
+        <p className={style.collectionHeader}>{currentCategory?.name}</p>
+        <div>Found {filteredProducts?.length} results</div>
+
+        <ProductFilters 
+          filters={currentFilters}
+          setter={setCurrentFilters} 
+        />
+
+        <Grid 
+          type="product" 
+          items={filteredProducts && filteredProducts}
+          totalItems={filteredProducts?.length || 0} 
+        />
+      </Container>
+
+    </Container>
+
+    )
+}
+
+CollectionPage.Layout = Layout;
+
+export default CollectionPage

@@ -1,0 +1,59 @@
+ 
+.imgContainer {
+    @apply w-full relative;
+}
+
+.priceContainer {
+    @apply flex justify-between mt-2 text-sm font-semibold text-gray-500;
+}
+  
+.productName {
+    @apply mt-0
+}
+  
+.productPrice {
+    @apply mt-0
+}
+
+.productCategoryCopyContainer {
+    @apply flex flex-col max-w-full;
+}
+
+.mainCategoryContainer {
+    @apply flex flex-row items-center;
+}
+
+.subcategory {
+    @apply uppercase text-xs font-semibold text-gray-500 mt-2;
+}
+
+.category {
+    @apply text-lg mt-2 mr-2;
+}
+
+.displayHeader {
+    @apply text-center text-lg font-semibold text-gray-700 mt-4;
+}
+
+.displayCopy {
+    @apply text-center mt-2 font-thin px-5;
+}
+
+.customBody {
+}
+
+.optionsContainer {
+    @apply flex flex-col;
+}
+
+.optionContainer {
+    @apply flex flex-wrap;
+}
+
+.colorAlternative {
+    @apply shadow-md w-6 h-6 m-1 rounded-xl;
+}
+
+.sizeAlternative {
+    @apply shadow-md m-1 py-1 px-2 rounded-md font-semibold text-sm text-gray-400;
+}

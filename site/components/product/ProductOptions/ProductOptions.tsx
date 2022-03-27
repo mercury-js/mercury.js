@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { Swatch } from '@components/product'
 import type { ProductOption } from '@commerce/types/product'
 import { SelectedOptions } from '../helpers'
+import { SIZES } from '@components/ui/CollectionCard'
 
 interface ProductOptionsProps {
   options: ProductOption[]
@@ -18,7 +19,7 @@ const ProductOptions: React.FC<ProductOptionsProps> = ({
     <div>
       {options.map((opt) => (
         <div className="pb-4" key={opt.displayName}>
-          <h2 className="uppercase font-medium text-sm tracking-wide">
+          <h2 className="capitalize font-medium text-sm tracking-wide">
             {opt.displayName}
           </h2>
           <div role="listbox" className="flex flex-row py-4">
@@ -30,7 +31,7 @@ const ProductOptions: React.FC<ProductOptionsProps> = ({
                   active={v.label.toLowerCase() === active}
                   variant={opt.displayName}
                   color={v.hexColors ? v.hexColors[0] : ''}
-                  label={v.label}
+                  label={opt.displayName === 'size' ? SIZES[v.label] : v.label}
                   onClick={() => {
                     setSelectedOptions((selectedOptions) => {
                       return {

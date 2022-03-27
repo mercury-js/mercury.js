@@ -5,14 +5,11 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { Layout } from '@components/common'
-import { ProductCard } from '@components/product'
-import type { Product } from '@commerce/types/product'
-import { Container, Skeleton } from '@components/ui'
+import { Container, Skeleton, Grid, ProductFilters } from '@components/ui'
 
 import useSearch from '@framework/product/use-search'
 
 import getSlug from '@lib/get-slug'
-import rangeMap from '@lib/range-map'
 
 const SORT = {
   'trending-desc': 'Trending',
@@ -27,6 +24,8 @@ import {
   getDesignerPath,
   useSearchMeta,
 } from '@lib/search'
+
+import { useFilter } from '@lib/hooks/useFilter'
 
 export default function Search({ categories, brands }: SearchPropsType) {
   const [activeFilter, setActiveFilter] = useState('')
@@ -53,6 +52,8 @@ export default function Search({ categories, brands }: SearchPropsType) {
     sort: typeof sort === 'string' ? sort : '',
     locale,
   })
+
+  const { filteredProducts, currentFilters, setCurrentFilters } = useFilter(data?.products)
 
   const handleClick = (event: any, filter: string) => {
     if (filter !== activeFilter) {
@@ -279,7 +280,7 @@ export default function Search({ categories, brands }: SearchPropsType) {
                       hidden: !data.found,
                     })}
                   >
-                    Showing {data.products.length} results{' '}
+                    Showing {filteredProducts?.length} results{' '}
                     {q && (
                       <>
                         for "<strong>{q}</strong>"
@@ -313,27 +314,24 @@ export default function Search({ categories, brands }: SearchPropsType) {
             </div>
           )}
           {data ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {data.products.map((product: Product) => (
-                <ProductCard
-                  variant="simple"
-                  key={product.path}
-                  className="animated fadeIn"
-                  product={product}
-                  imgProps={{
-                    width: 480,
-                    height: 480,
-                  }}
-                />
-              ))}
+            <div className="">
+              <ProductFilters filters={currentFilters} setter={setCurrentFilters} />
+              <Grid 
+                items={filteredProducts || data.products}
+                type="product"
+                itemsPerGridLine={{
+                  'xxl': 5,
+                  'xl': 4,
+                  'lg': 3,
+                  'md': 2,
+                  'sm': 2,
+                  'xs': 1
+                }}
+              />
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {rangeMap(12, (i) => (
-                <Skeleton key={i}>
-                  <div className="w-60 h-60" />
-                </Skeleton>
-              ))}
+
             </div>
           )}{' '}
         </div>

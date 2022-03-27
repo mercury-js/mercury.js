@@ -1,0 +1,7 @@
+.highlightBar {
+    @apply w-full bg-black text-white text-xs font-semibold text-center py-2
+  }
+  
+  .hiddenHighlightBar {
+    @apply hidden
+  }

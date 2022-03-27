@@ -1,0 +1,19 @@
+.root {
+    @apply flex flex-row;
+}
+
+.collectionSelectorOuter {
+    @apply flex flex-col;
+}
+
+.collectionSelectorInner {
+    @apply flex flex-col;
+}
+
+.selectedCollection {
+    @apply underline;
+}
+
+.collectionHeader {
+    @apply text-3xl font-bold;
+}

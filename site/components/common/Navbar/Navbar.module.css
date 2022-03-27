@@ -8,7 +8,7 @@
 }
 
 .navMenu {
-  @apply hidden ml-6 space-x-4 lg:block;
+  @apply hidden px-3 lg:flex;
 }
 
 .link {
@@ -26,10 +26,9 @@
 }
 
 .logo {
-  @apply cursor-pointer rounded-full border transform duration-100 ease-in-out;
+  @apply cursor-pointer transform duration-100 ease-in-out z-50;
 
   &:hover {
-    @apply shadow-md;
     transform: scale(1.05);
   }
 }

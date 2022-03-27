@@ -9,7 +9,7 @@
 }
 
 .link {
-  @apply text-primary flex cursor-pointer px-6 py-3 flex transition ease-in-out duration-150 leading-6 font-medium items-center;
+  @apply text-primary flex cursor-pointer px-6 py-3 transition ease-in-out duration-150 leading-6 font-medium items-center;
   text-transform: capitalize;
 }
 

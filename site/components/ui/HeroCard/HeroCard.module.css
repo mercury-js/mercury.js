@@ -1,0 +1,31 @@
+.root {
+    @apply flex flex-col items-center py-16 mx-auto;
+  }
+  
+  .title {
+    @apply font-extrabold text-4xl leading-none tracking-tight text-center mb-8;
+  }
+  
+  .subheader {
+    @apply mt-4 text-xl leading-8 mb-4 lg:max-w-4xl;
+  }
+  
+  @screen lg {
+    .root {
+      @apply flex-col items-center justify-center py-32;
+    }
+    .title {
+      @apply text-5xl max-w-xl leading-10 -mt-3 text-center;
+      line-height: 3.5rem;
+    }
+    .subheader {
+      @apply mt-0 ml-6;
+    }
+  }
+  
+  @screen xl {
+    .title {
+      @apply text-6xl;
+    }
+  }
+  
