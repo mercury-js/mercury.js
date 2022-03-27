@@ -1,14 +1,19 @@
 import commerce from '@lib/api/commerce'
 import { Layout } from '@components/common'
-import { Grid, Marquee, Hero, HeroAlt, Collection } from '@components/ui'
-import { ProductCategoryCard, DisplayCard, ProductCard, CustomCard } from '@components/ui/CollectionCard'
-import Image, { ImageProps } from 'next/image'
+import { HeroAlt } from '@components/ui'
+import { ProductCategoryCard, DisplayCard, CustomCard } from '@components/ui/CollectionCard'
+
 // import HomeAllProductsGrid from '@components/common/HomeAllProductsGrid'
 import type { GetStaticPropsContext, InferGetStaticPropsType } from 'next'
-import { getCategories } from '@framework/utils'
 import Link from 'next/link'
 
-export async function getStaticProps({
+import { suspend } from '@components/custom/wrappers'
+
+const Grid = suspend(() => import(`@components/ui/Grid`))
+
+
+// NOTE: SSG/ISR (`getStaticProps`) is not available on React 18 for now
+export async function getServerSideProps({
   preview,
   locale,
   locales,
@@ -34,7 +39,6 @@ export async function getStaticProps({
       brands,
       pages,
     },
-    revalidate: 60,
   }
 }
 
@@ -74,8 +78,7 @@ const getDataForCustomGrid = () => {
 
 export default function Home({
   products,
-  categories,
-}: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
+}: InferGetStaticPropsType<typeof getServerSideProps>): JSX.Element {
   
   return (
     <>

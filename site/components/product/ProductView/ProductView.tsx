@@ -1,19 +1,19 @@
 import cn from 'clsx'
-import Image from 'next/image'
 import s from './ProductView.module.css'
-import { FC } from 'react'
+import { FC, Suspense, lazy } from 'react'
 import type { Product } from '@commerce/types/product'
 import usePrice from '@framework/product/use-price'
 import { WishlistButton } from '@components/wishlist'
-import { ProductSlider, ProductCard, ProductImages } from '@components/product'
+import { ProductImages } from '@components/product'
 import { Container, Text, Grid } from '@components/ui'
 import { SEO } from '@components/common'
-import ProductSidebar from '../ProductSidebar'
-import ProductTag from '../ProductTag'
 interface ProductViewProps {
   product: Product
   relatedProducts: Product[]
 }
+
+// TODO:more Suspense, code splitting with proper boundaries
+const ProductSidebar = lazy(() => import('../ProductSidebar'))
 
 const ProductView: FC<ProductViewProps> = ({ product, relatedProducts }) => {
   const { price } = usePrice({
@@ -40,11 +40,13 @@ const ProductView: FC<ProductViewProps> = ({ product, relatedProducts }) => {
             )}
           </div>
 
-          <ProductSidebar
-            key={product.id}
-            product={product}
-            className={s.sidebar}
-          />
+          <Suspense fallback="Loading...">
+            <ProductSidebar
+              key={product.id}
+              product={product}
+              className={s.sidebar}
+            />
+          </Suspense>
         </div>
         <hr className="mt-7 border-accent-2" />
         <div className="py-12 px-6 mb-10">

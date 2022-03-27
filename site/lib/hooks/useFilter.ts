@@ -112,12 +112,7 @@ const filterMatchingProducts = (products: Product[], filterObject: object) => {
 }
 
 
-interface FilterProps {
-    allProducts: Product[]
-}
-
-
-export const useFilter: FC<FilterProps> = allProducts => {
+export const useFilter = (allProducts: Product[]) => {
 
     const [productData, setProductData] = useState(allProducts)
     const [filteredProducts, setFilteredProducts] = useState(allProducts)

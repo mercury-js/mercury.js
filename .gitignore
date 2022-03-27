@@ -47,3 +47,11 @@ yarn-error.log*
 /site/public/assets/hero*
 /site/public/assets/*logo*
 /site/public/assets/*nav*
+
+# temp files and folders
+Temp*.tsx
+zzz_*
+
+# local note files
+TODO*
+NOTE*

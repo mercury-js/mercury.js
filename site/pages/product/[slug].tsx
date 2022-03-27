@@ -3,12 +3,14 @@ import type {
   GetStaticPropsContext,
   InferGetStaticPropsType,
 } from 'next'
-import { useRouter } from 'next/router'
 import commerce from '@lib/api/commerce'
 import { Layout } from '@components/common'
 import { ProductView } from '@components/product'
 
-export async function getStaticProps({
+import type { Router } from 'next/router'
+import type { RouterSnapshot } from '@components/custom/helpers'
+
+export async function getServerSideProps({
   params,
   locale,
   locales,
@@ -44,32 +46,37 @@ export async function getStaticProps({
       relatedProducts,
       categories,
     },
-    revalidate: 200,
   }
 }
 
-export async function getStaticPaths({ locales }: GetStaticPathsContext) {
-  const { products } = await commerce.getAllProductPaths()
 
-  return {
-    paths: locales
-      ? locales.reduce<string[]>((arr, locale) => {
-          // Add a product path for every locale
-          products.forEach((product: any) => {
-            arr.push(`/${locale}/product${product.path}`)
-          })
-          return arr
-        }, [])
-      : products.map((product: any) => `/product${product.path}`),
-    fallback: 'blocking',
-  }
-}
+// NOTE: for now not available on "experimental" (React 18)
+// export async function getStaticPaths({ locales }: GetStaticPathsContext) {
+//   const { products } = await commerce.getAllProductPaths()
+
+//   return {
+//     paths: locales
+//       ? locales.reduce<string[]>((arr, locale) => {
+//           // Add a product path for every locale
+//           products.forEach((product: any) => {
+//             arr.push(`/${locale}/product${product.path}`)
+//           })
+//           return arr
+//         }, [])
+//       : products.map((product: any) => `/product${product.path}`),
+//     fallback: 'blocking',
+//   }
+// }
 
 export default function Slug({
   product,
+  router,
   relatedProducts,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
-  const router = useRouter()
+}: (
+  InferGetStaticPropsType<typeof getServerSideProps> &
+  { router: Router | RouterSnapshot }
+)) {
+  // const router = useRouter()
 
   return router.isFallback ? (
     <h1>Loading...</h1>

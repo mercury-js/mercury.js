@@ -1,5 +1,5 @@
 import cn from 'clsx'
-import React, { FC } from 'react'
+import React, { FC, } from 'react'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { CommerceProvider } from '@framework'
@@ -43,12 +43,10 @@ const ForgotPassword = dynamic(
   }
 )
 
-const FeatureBar = dynamic(
-  () => import('@components/common/FeatureBar'),
-  {
-    ...dynamicProps
-  }
-)
+// TODO: dynamic/lazy without mismatch (Supsense)
+// (get rid of `getStaticP(rops)|(ath)`
+// on pages, (unsupported by SSR streaming))
+import FeatureBar from '../FeatureBar/FeatureBar'
 
 const Modal = dynamic(
   () => import('@components/ui/Modal'),
@@ -133,6 +131,7 @@ const Layout: FC<Props> = ({
         <CheckoutProvider>
           <SidebarUI links={navBarlinks} />
         </CheckoutProvider>
+        {/* <Suspense fallback="Loading...."> */}
         <FeatureBar
           title="This site uses cookies to improve your experience. By clicking, you agree to our Privacy Policy."
           hide={acceptedCookies}
@@ -142,6 +141,7 @@ const Layout: FC<Props> = ({
             </Button>
           }
         />
+        {/* </Suspense> */}
       </div>
     </CommerceProvider>
   )
