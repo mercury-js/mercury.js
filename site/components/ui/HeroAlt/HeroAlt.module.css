@@ -1,3 +1,5 @@
+/* Copyright (c) 2022 Churn Out Labs Ltd. (FI32159032). */
+
 .root {
   @apply flex flex-col py-16 mx-auto;
 }

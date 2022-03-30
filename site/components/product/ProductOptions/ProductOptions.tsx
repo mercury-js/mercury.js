@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { Swatch } from '@components/product'
 import type { ProductOption } from '@commerce/types/product'
 import { SelectedOptions } from '../helpers'
-import { SIZES } from '@components/ui/CollectionCard'
+import { SIZES, SizeProp } from '@components/ui/CollectionCard'
 
 interface ProductOptionsProps {
   options: ProductOption[]
@@ -31,7 +31,7 @@ const ProductOptions: React.FC<ProductOptionsProps> = ({
                   active={v.label.toLowerCase() === active}
                   variant={opt.displayName}
                   color={v.hexColors ? v.hexColors[0] : ''}
-                  label={opt.displayName === 'size' ? SIZES[v.label] : v.label}
+                  label={opt.displayName === 'size' ? SIZES[v.label as SizeProp] : v.label}
                   onClick={() => {
                     setSelectedOptions((selectedOptions) => {
                       return {

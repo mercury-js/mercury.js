@@ -1,1 +1,1 @@
-export { default } from './NavCategory'
+export { default } from './NavCategory';

@@ -1,0 +1,9 @@
+{
+  "extends": [ "../config/eslint-config-custom" ],
+  // TODO: DRY?
+  "ignorePatterns": [
+    "*.*", // NOTE: ESLint wants extension (*)
+    "!custom/*",
+    "!hooks/useFilter.ts"
+  ]
+}

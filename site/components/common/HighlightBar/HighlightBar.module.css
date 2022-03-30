@@ -1,7 +1,9 @@
+/* Copyright (c) 2022 Churn Out Labs Ltd. (FI32159032). */
+
 .highlightBar {
-    @apply w-full bg-black text-white text-xs font-semibold text-center py-2
-  }
-  
-  .hiddenHighlightBar {
-    @apply hidden
-  }
+  @apply w-full bg-black text-white text-xs font-semibold text-center py-2;
+}
+
+.hiddenHighlightBar {
+  @apply hidden;
+}

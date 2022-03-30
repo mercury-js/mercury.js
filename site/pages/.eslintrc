@@ -1,0 +1,9 @@
+{
+  "extends": [ "../config/eslint-config-custom" ],
+  // TODO: share site-wide?
+  "ignorePatterns": [
+    "*.*", // NOTE: ESLint wants extension (*)
+    "!index.tsx",
+    "!collections/*"
+  ]
+}

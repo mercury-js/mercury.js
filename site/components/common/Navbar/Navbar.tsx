@@ -71,8 +71,8 @@ const Navbar: FC<NavbarProps> = ({ links }) => (
             </a>
           </Link>
           <nav className={s.navMenu}>
-            {links?.map((link) => (
-              <NavCategory mainLink={link} subcats={subCategories} />
+            {links?.map((link, i) => (
+              <NavCategory key={i} mainLink={link} subcats={subCategories} />
             ))}
           </nav>
         </div>

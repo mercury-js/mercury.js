@@ -1,40 +1,40 @@
+/* Copyright (c) 2022 Churn Out Labs Ltd. (FI32159032). */
+
 .sublinkContainerOuter {
-    @apply w-screen bg-white py-8 px-12 shadow-magical
+  @apply w-screen bg-white py-8 px-12 shadow-magical;
 }
 
 .navCatGrid {
-    @apply grid grid-cols-4
+  @apply grid grid-cols-4;
 }
 
 .sublinkContainerInner {
-    @apply flex flex-col
+  @apply flex flex-col;
 }
 
-
 .mainLink {
-    @apply text-sm
+  @apply text-sm;
 }
 
 .visible {
-    display: block;
-    position: fixed;
-    left: 0px;
-    margin-left: 0px !important;
+  display: block;
+  position: fixed;
+  left: 0px;
+  margin-left: 0px !important;
 }
 
 .underline {
-    @apply border-b border-black
+  @apply border-b border-black;
 }
 
 .invisible {
-    display: none;
+  display: none;
 }
 
 .linkContainer {
-    @apply px-3
+  @apply px-3;
 }
 
 .bottomPadding {
-    @apply pb-2
+  @apply pb-2;
 }
-

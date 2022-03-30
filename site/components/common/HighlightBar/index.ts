@@ -1,1 +1,1 @@
-export { default } from './HighlightBar'
+export { default } from './HighlightBar';

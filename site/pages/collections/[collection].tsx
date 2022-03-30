@@ -1,66 +1,70 @@
-import { getSearchStaticProps } from '@lib/search-props'
-import type { GetStaticPropsContext } from 'next'
-import { Grid, Container, ProductFilters } from '@components/ui'
-import { Layout } from '@components/common'
-import { useRouter } from 'next/router'
-import Link from 'next/link'
-import { useState, useEffect } from 'react'
+/**
+ * Collection page component.
+ * @module
+ */
 
-import useSearch from '@framework/product/use-search'
+/**
+ * @preserve
+ * Copyright (c) 2022 Churn Out Labs Ltd. (FI32159032).
+ */
 
-import style from './Collection.module.css'
+import { getSearchStaticProps } from '@lib/search-props';
+import type { GetStaticPropsContext } from 'next';
+import { Grid, Container, ProductFilters } from '@components/ui';
+import { Layout } from '@components/common';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
 
-import {
-  filterQuery,
-  getCategoryPath,
-  getDesignerPath,
-  useSearchMeta,
-} from '@lib/search'
+import useSearch from '@framework/product/use-search';
 
-import type { Product } from '@commerce/types/product'
-import { useFilter } from '@lib/hooks/useFilter'
+import style from './Collection.module.css';
+
+import { useSearchMeta } from '@lib/search';
+
+import type { Product } from '@commerce/types/product';
+import { useFilter } from '@lib/hooks/useFilter';
 
 export async function getServerSideProps(context: GetStaticPropsContext) {
-  const props = await getSearchStaticProps(context)
+  const props = await getSearchStaticProps(context);
 
-  return { props: props.props }
+  return { props: props.props };
 }
 
-const CollectionPage = ({ categories, brands }) => {
+const CollectionPage = ({ categories }: { categories: any[] }) => {
 
-  const [productData, setProductData] = useState([])
+  const [productData, setProductData] = useState<Product[]>([]);
 
-  const router = useRouter()
-  const { asPath, locale } = router
-  const { q, sort } = router.query
+  const router = useRouter();
+  const { asPath, locale } = router;
 
-  const { pathname, category, brand } = useSearchMeta(asPath)
+  const { category } = useSearchMeta(asPath);
 
-  const currentCategory = categories.find((cat: any) => cat.slug === category)
+  const currentCategory = categories.find((cat: any) => cat.slug === category);
 
   const { data } = useSearch({
     categoryId: currentCategory?.id,
     locale,
-  })
+  });
 
   useEffect(() => {
-    console.log(data?.products)
-    setProductData(data?.products)
+    // console.log(data?.products)
+    setProductData(data?.products as Product[]);
   }, [data]);
 
-  const { filteredProducts, currentFilters, setCurrentFilters } = useFilter(productData)
+  const { filteredProducts, currentFilters, setCurrentFilters } = useFilter(productData);
 
   return (
-      <Container className={style.root}>
+    <Container className={style.root}>
 
       <div className={style.collectionSelectorOuter}>
         <div className={style.collectionSelectorInner}>
           {categories.map(category => {
             return (
-              <Link href={`/collections/${category.slug}`}>
+              <Link key={category.name} href={`/collections/${category.slug}`}>
                 <a className={category?.slug === currentCategory?.slug ? style.selectedCollection : ''}>{category.name}</a>  
               </Link>  
-            )
+            );
           })}
         </div>
       </div>
@@ -82,9 +86,9 @@ const CollectionPage = ({ categories, brands }) => {
 
     </Container>
 
-    )
-}
+  );
+};
 
 CollectionPage.Layout = Layout;
 
-export default CollectionPage
+export default CollectionPage;

@@ -1,19 +1,21 @@
+/* Copyright (c) 2022 Churn Out Labs Ltd. (FI32159032). */
+
 .root {
-    @apply flex flex-row;
+  @apply flex flex-row;
 }
 
 .collectionSelectorOuter {
-    @apply flex flex-col;
+  @apply flex flex-col;
 }
 
 .collectionSelectorInner {
-    @apply flex flex-col;
+  @apply flex flex-col;
 }
 
 .selectedCollection {
-    @apply underline;
+  @apply underline;
 }
 
 .collectionHeader {
-    @apply text-3xl font-bold;
+  @apply text-3xl font-bold;
 }

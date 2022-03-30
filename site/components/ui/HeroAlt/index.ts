@@ -1,1 +1,1 @@
-export { default } from './HeroAlt'
+export { default } from './HeroAlt';

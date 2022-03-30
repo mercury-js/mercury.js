@@ -5,7 +5,7 @@ import type { Product } from '@commerce/types/product'
 import usePrice from '@framework/product/use-price'
 import { WishlistButton } from '@components/wishlist'
 import { ProductImages } from '@components/product'
-import { Container, Text, Grid } from '@components/ui'
+import { Container, Grid } from '@components/ui'
 import { SEO } from '@components/common'
 interface ProductViewProps {
   product: Product

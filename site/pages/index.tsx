@@ -1,15 +1,14 @@
-import commerce from '@lib/api/commerce'
-import { Layout } from '@components/common'
-import { HeroAlt } from '@components/ui'
-import { ProductCategoryCard, DisplayCard, CustomCard } from '@components/ui/CollectionCard'
+import commerce from '@lib/api/commerce';
+import { Layout } from '@components/common';
+import { HeroAlt } from '@components/ui';
+import { ProductCategoryCard, DisplayCard, CustomCard } from '@components/ui/CollectionCard';
 
-// import HomeAllProductsGrid from '@components/common/HomeAllProductsGrid'
-import type { GetStaticPropsContext, InferGetStaticPropsType } from 'next'
-import Link from 'next/link'
+import type { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
+import Link from 'next/link';
 
-import { suspend } from '@components/custom/wrappers'
+import { suspend } from '@components/custom/wrappers';
 
-const Grid = suspend(() => import(`@components/ui/Grid`))
+const Grid = suspend(() => import('@components/ui/Grid'));
 
 
 // NOTE: SSG/ISR (`getStaticProps`) is not available on React 18 for now
@@ -18,19 +17,19 @@ export async function getServerSideProps({
   locale,
   locales,
 }: GetStaticPropsContext) {
-  const config = { locale, locales }
+  const config = { locale, locales };
   const productsPromise = commerce.getAllProducts({
     variables: { first: 20 },
     config,
     preview,
     // Saleor provider only
     ...({ featured: true } as any),
-  })
-  const pagesPromise = commerce.getAllPages({ config, preview })
-  const siteInfoPromise = commerce.getSiteInfo({ config, preview })
-  const { products } = await productsPromise
-  const { pages } = await pagesPromise
-  const { categories, brands } = await siteInfoPromise
+  });
+  const pagesPromise = commerce.getAllPages({ config, preview });
+  const siteInfoPromise = commerce.getSiteInfo({ config, preview });
+  const { products } = await productsPromise;
+  const { pages } = await pagesPromise;
+  const { categories, brands } = await siteInfoPromise;
 
   return {
     props: {
@@ -39,7 +38,7 @@ export async function getServerSideProps({
       brands,
       pages,
     },
-  }
+  };
 }
 
 const getDataForDisplayGrid = () => {
@@ -50,7 +49,7 @@ const getDataForDisplayGrid = () => {
   ];
 
   return data;
-}
+};
 
 const getDataForCategoryGrid = () => {
   const data: ProductCategoryCard[] = [
@@ -62,7 +61,7 @@ const getDataForCategoryGrid = () => {
   ];
 
   return data;
-}
+};
 
 const getDataForCustomGrid = () => {
 
@@ -74,7 +73,7 @@ const getDataForCustomGrid = () => {
   ];
 
   return data;
-}
+};
 
 export default function Home({
   products,
@@ -137,7 +136,7 @@ export default function Home({
           'sm': 3,
           'xs': 2
         }}
-        />
+      />
 
       <Grid 
         type='custom' 
@@ -152,10 +151,10 @@ export default function Home({
           'sm': 2,
           'xs': 1
         }}
-        />
+      />
 
     </>
-  )
+  );
 }
 
-Home.Layout = Layout
+Home.Layout = Layout;

@@ -52,6 +52,7 @@ const HomeAllProductsGrid: FC<Props> = ({
         </div>
       </div>
       <div className="flex-1">
+        {/* @ts-ignore */}
         <Grid layout="normal">
           {products.map((product) => (
             <ProductCard

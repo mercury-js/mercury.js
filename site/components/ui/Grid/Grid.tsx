@@ -40,7 +40,7 @@ const Grid: FC<GridProps> = ({
     <>
       { header && <h1 className={style.gridHeader}>{header}</h1> }
       <div className={classes}>
-        { items?.slice(0, totalItems).map(item => <CollectionCard type={type} item={item} imageHeight={imageHeightPx}/>) }     
+        { items?.slice(0, totalItems).map((item, i) => <CollectionCard key={i} type={type} item={item} imageHeight={imageHeightPx}/>) }     
       </div>
     </>
   )

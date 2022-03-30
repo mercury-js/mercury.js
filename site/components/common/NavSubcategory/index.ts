@@ -1,2 +1,2 @@
-export { default } from './NavSubcategory'
-export type { NavSubcategoryProps } from './NavSubcategory'
+export { default } from './NavSubcategory';
+export type { NavSubcategoryProps } from './NavSubcategory';

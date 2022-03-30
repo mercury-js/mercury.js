@@ -1,72 +1,85 @@
-import cn from 'clsx'
-import { FC, ReactNode, Component, useState, useEffect } from 'react'
-import style from './ProductFilters.module.css'
-import { Container, CollectionCard } from '@components/ui'
+/**
+ * Product filters component.
+ * @module
+ */
+
+/**
+ * @preserve
+ * Copyright (c) 2022 Churn Out Labs Ltd. (FI32159032).
+ */
+
+import cn from 'clsx';
+import { FC, useState, Dispatch, SetStateAction } from 'react';
+import style from './ProductFilters.module.css';
 
 
+type Filters = Record<string, any>;
 interface FilterProps {
-    className?: string
-    filters: object
-    setter: any
-}
+  className?: string;
+  filters: Filters;
+  setter: any;
+};
 
-const FilterAlternative = ({label, filter, setter}) => {
-    const [isSelected, setIsSelected] = useState(false);
+const FilterAlternative = ({ label, filter, setter }: {
+    label: string,
+    filter: string,
+    setter: Dispatch<SetStateAction<Filters>>
+}) => {
+  const [isSelected, setIsSelected] = useState(false);
 
-    const handleClick = () => { 
-        setIsSelected(!isSelected) 
-        setter(prevState => {
-            return {
-                ...prevState,
-                [filter]: {
-                    ...prevState[filter], [label]: !isSelected
-                }
-            }
-        })
-    }
+  const handleClick = () => { 
+    setIsSelected(!isSelected); 
+    setter(prevState => {
+      return {
+        ...prevState,
+        [filter]: {
+          ...prevState[filter], [label]: !isSelected
+        }
+      };
+    });
+  };
 
-    return (
-        <div className={style.alternativeContainer}>
-            <label className={style.alternativeLabel}>
-                <input 
-                    className={style.alternativeInput}
-                    type="checkbox" 
-                    checked={isSelected}
-                    onClick={handleClick}
-                />
-                { label }
-            </label>
-        </div>
-    )
-}
+  return (
+    <div className={style.alternativeContainer}>
+      <label className={style.alternativeLabel}>
+        <input 
+          className={style.alternativeInput}
+          type="checkbox" 
+          checked={isSelected}
+          onClick={handleClick}
+        />
+        { label }
+      </label>
+    </div>
+  );
+};
 
 const ProductFilters: FC<FilterProps> = ({
-    className,
-    filters,
-    setter,
+  filters,
+  setter,
 }) => {
 
-    const [filtersShown, setFiltersShown] = useState(false);
+  const [filtersShown, setFiltersShown] = useState(false);
 
-    return (
-        <>
-            <div className={style.filterToggle} onClick={() => setFiltersShown(!filtersShown)}>
+  return (
+    <>
+      <div className={style.filterToggle} onClick={() => setFiltersShown(!filtersShown)}>
                 Filters
-            </div>
-            <div className={cn(style.filtersContainer, filtersShown ? style.show : style.hide)}>
-                { filters != {} && Object.keys(filters).map(filter => {
-                    const values = Object.keys(filters[filter]).map(key => <FilterAlternative label={key} filter={filter} setter={setter}/>)
+      </div>
+      <div className={cn(style.filtersContainer, filtersShown ? style.show : style.hide)}>
+        { Object.keys(filters).map((filter, i) => {
+          const values = Object.keys(filters[filter]).map(key => <FilterAlternative key={key} label={key} filter={filter} setter={setter}/>);
 
-                    return (
-                        <div className={style.filterContainer}>
-                            <p className={style.filterHeader}>{filter}</p>
-                            {values}
-                        </div>
-                    )
-                })}
+          return (
+            <div key={i} className={style.filterContainer}>
+              <p className={style.filterHeader}>{filter}</p>
+              {values}
             </div>
-        </>
-    )
-}
+          );
+        })}
+      </div>
+    </>
+  );
+};
 
-export default ProductFilters
+export default ProductFilters;

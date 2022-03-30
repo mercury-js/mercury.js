@@ -1,0 +1,17 @@
+{
+  "extends": [ "../config/eslint-config-custom" ],
+  // TODO: include all?
+  "ignorePatterns": [
+    "*.*", // NOTE: ESLint wants extension (*)
+    "!custom/*",
+    "!HighlightBar/*",
+    "!Nav*Category/*",
+    "!Mercury.tsx",
+    "!ProductImages/*",
+    "!CollectionCard/*",
+    "!HeroAlt/*",
+    "!HeroCard/*",
+    "!ProductFilters/*",
+    "!search.tsx"
+  ]
+}
