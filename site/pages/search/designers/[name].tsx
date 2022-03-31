@@ -1,5 +1,5 @@
 import { getSearchStaticProps } from '@lib/search-props'
-import type { GetStaticPathsResult, GetStaticPropsContext } from 'next'
+import type { GetStaticPropsContext } from 'next'
 import Search from '@components/search'
 
 export async function getServerSideProps(context: GetStaticPropsContext) {

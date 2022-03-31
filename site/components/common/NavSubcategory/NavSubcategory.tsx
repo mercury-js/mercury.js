@@ -32,8 +32,8 @@ const NavSubcategory: FC<NavSubcategoryProps> = ({ type, subcategoryHeader, link
     type === 'links' ?
       <div className={style.sublinkContainerInner}>
         <p className={style.sublinkHeader}>{subcategoryHeader}</p>
-        {links.map(link => (
-          <Link href={link.href} key={link.href}>
+        {links.map((link, i) => (
+          <Link href={link.href} key={i}>
             <a className={ cn(style.sublink, link.highlighted ? style.highlighted : '') }>{link.label}</a>
           </Link>
         ))}

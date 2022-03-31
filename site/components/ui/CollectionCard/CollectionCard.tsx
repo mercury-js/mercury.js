@@ -107,6 +107,8 @@ const CollectionCard: FC<CollectionCardProps> = ({
                   alt={(item)?.name || 'Product Image'}
                   layout="fill"
                   objectFit="cover"
+                  // TODO: above-the-fold
+                  loading="eager"
                 />
 
               </div>

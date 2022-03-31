@@ -27,7 +27,7 @@ const FilterAlternative = ({ label, filter, setter }: {
 }) => {
   const [isSelected, setIsSelected] = useState(false);
 
-  const handleClick = () => { 
+  const handleChange = () => { 
     setIsSelected(!isSelected); 
     setter(prevState => {
       return {
@@ -46,7 +46,7 @@ const FilterAlternative = ({ label, filter, setter }: {
           className={style.alternativeInput}
           type="checkbox" 
           checked={isSelected}
-          onClick={handleClick}
+          onChange={handleChange}
         />
         { label }
       </label>

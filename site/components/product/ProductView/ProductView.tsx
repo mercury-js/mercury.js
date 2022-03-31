@@ -7,13 +7,14 @@ import { WishlistButton } from '@components/wishlist'
 import { ProductImages } from '@components/product'
 import { Container, Grid } from '@components/ui'
 import { SEO } from '@components/common'
+import { suspend } from '@components/custom/wrappers';
 interface ProductViewProps {
   product: Product
   relatedProducts: Product[]
 }
 
-// TODO:more Suspense, code splitting with proper boundaries
-const ProductSidebar = lazy(() => import('../ProductSidebar'))
+
+const ProductSidebar = suspend(() => import('../ProductSidebar'));
 
 const ProductView: FC<ProductViewProps> = ({ product, relatedProducts }) => {
   const { price } = usePrice({
@@ -39,14 +40,11 @@ const ProductView: FC<ProductViewProps> = ({ product, relatedProducts }) => {
               />
             )}
           </div>
-
-          <Suspense fallback="Loading...">
-            <ProductSidebar
-              key={product.id}
-              product={product}
-              className={s.sidebar}
-            />
-          </Suspense>
+          <ProductSidebar
+            key={product.id}
+            product={product}
+            className={s.sidebar}
+          />
         </div>
         <hr className="mt-7 border-accent-2" />
         <div className="py-12 px-6 mb-10">

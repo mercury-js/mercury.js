@@ -34,7 +34,9 @@ export default function MyApp({
             // (with glob/fs? hox func name mangling)
             pageComponents={[
               '/product/[slug]',
-              '/search/designers/[name]'
+              '/search/[category]',
+              '/search/designers/[name]',
+              '/collections/[collection]',
             ].map(pagePath => (
               // NOTE:
               // - lazy for a smaller JS bundle on initial load

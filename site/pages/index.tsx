@@ -1,6 +1,5 @@
 import commerce from '@lib/api/commerce';
 import { Layout } from '@components/common';
-import { HeroAlt } from '@components/ui';
 import { ProductCategoryCard, DisplayCard, CustomCard } from '@components/ui/CollectionCard';
 
 import type { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
@@ -8,7 +7,9 @@ import Link from 'next/link';
 
 import { suspend } from '@components/custom/wrappers';
 
+
 const Grid = suspend(() => import('@components/ui/Grid'));
+const HeroAlt = suspend(() => import('@components/ui/HeroAlt'));
 
 
 // NOTE: SSG/ISR (`getStaticProps`) is not available on React 18 for now

@@ -37,6 +37,7 @@ const Searchbar: FC<Props> = ({ className, id = 'search' }) => {
       <label className="hidden" htmlFor={id}>
         Search
       </label>
+      {/* prerender on input? (single shell) */}
       <input
         id={id}
         className={s.input}

@@ -12,7 +12,6 @@ import { getSearchStaticProps } from '@lib/search-props';
 import type { GetStaticPropsContext } from 'next';
 import { Grid, Container, ProductFilters } from '@components/ui';
 import { Layout } from '@components/common';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 
@@ -25,17 +24,23 @@ import { useSearchMeta } from '@lib/search';
 import type { Product } from '@commerce/types/product';
 import { useFilter } from '@lib/hooks/useFilter';
 
+import type { Router } from 'next/router';
+import type { RouterSnapshot } from '@components/custom/helpers';
+
+
 export async function getServerSideProps(context: GetStaticPropsContext) {
   const props = await getSearchStaticProps(context);
 
   return { props: props.props };
 }
 
-const CollectionPage = ({ categories }: { categories: any[] }) => {
+
+const CollectionPage = ({
+  categories, router
+}: { categories: any[] } & { router: Router | RouterSnapshot }) => {
 
   const [productData, setProductData] = useState<Product[]>([]);
 
-  const router = useRouter();
   const { asPath, locale } = router;
 
   const { category } = useSearchMeta(asPath);
