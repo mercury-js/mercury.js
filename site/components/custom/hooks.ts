@@ -13,7 +13,9 @@ import {
   useState,
   useEffect,
   useLayoutEffect,
-  MutableRefObject
+  MutableRefObject,
+  // @ts-ignore
+  startTransition,
 } from 'react';
 import {
   past,
@@ -51,6 +53,22 @@ const useBindRef = <A, B, C>(
   return fun.bind(null, ref);
 };
 
+// TODO: check (purpose)
+/**
+ * Allows marking updates
+ * within custom hooks as non-urgent
+ * without refactoring them.
+ */
+const useCustomHookTransition = (_val: any) => {
+  const [val, setVal] = useState(_val);
+  useEffect(() => {
+    startTransition(() => {
+      setVal(_val);
+    });
+  }, [_val]);
+  return val;
+};
+
 /** Forces a rerender. */
 const useRerender = () => (f => () => f(b => ++b))(useState(0)[1]);
 
@@ -64,5 +82,6 @@ export {
   useBindRef,
   useRerender,
   useRerenderEffect,
+  useCustomHookTransition,
   useIsomorphicLayoutEffect
 };

@@ -13,6 +13,8 @@ import useSearch from '@framework/product/use-search';
 
 import getSlug from '@lib/get-slug';
 
+import { useCustomHookTransition } from './custom/hooks';
+
 const SORT = {
   'trending-desc': 'Trending',
   'latest-desc': 'Latest arrivals',
@@ -48,13 +50,14 @@ export default function Search({
     (b: any) => getSlug(b.node.path) === `brands/${brand}`
   )?.node;
 
-  const { data } = useSearch({
+  // TODO: expand
+  const data = useCustomHookTransition(useSearch({
     search: typeof q === 'string' ? q : '',
     categoryId: activeCategory?.id,
     brandId: (activeBrand as any)?.entityId,
     sort: typeof sort === 'string' ? sort : '',
     locale,
-  });
+  }).data);
 
   const { filteredProducts, currentFilters, setCurrentFilters } = useFilter(data?.products!);
 

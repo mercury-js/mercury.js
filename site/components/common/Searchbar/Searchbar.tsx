@@ -18,9 +18,12 @@ const Searchbar: FC<Props> = ({ className, id = 'search' }) => {
   const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     e.preventDefault()
 
-    if (e.key === 'Enter') {
-      const q = e.currentTarget.value
-
+    const q = e.currentTarget.value
+    // NOTE: prioritize input update
+    // TEMP:? (see below)
+    setTimeout(() => {
+      // NOTE: doesn't update state, so instead
+      // `useSearch` consumers mark transitions
       router.push(
         {
           pathname: `/search`,
@@ -29,7 +32,7 @@ const Searchbar: FC<Props> = ({ className, id = 'search' }) => {
         undefined,
         { shallow: true }
       )
-    }
+    }, 0)
   }
 
   return (
