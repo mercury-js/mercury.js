@@ -7,6 +7,8 @@ Mercury.js is a customizable headless storefront template for ecom stores. It is
 - Decoupled to prevent vendor lock-in
 - Open source
 
+For a preview check out [our live demo](https://demo.mercuryjs.com).
+
 We used [Next.js Commerce](https://github.com/vercel/commerce) as a starting point.
 
 
@@ -19,7 +21,7 @@ We used [Next.js Commerce](https://github.com/vercel/commerce) as a starting poi
 - Smart search
 - ...
 
-For more info check out [our website][(**TODO**: link to our website)]
+For more info check out [our website](https://www.mercuryjs.com).
 
 **Features of Next.js Commerce**
 
