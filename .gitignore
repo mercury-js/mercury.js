@@ -39,15 +39,6 @@ yarn-error.log*
 # Turborepo
 .turbo
 
-
-# Local images
-/site/public/assets/category*
-/site/public/assets/custom*
-/site/public/assets/display*
-/site/public/assets/hero*
-/site/public/assets/*logo*
-/site/public/assets/*nav*
-
 # temp files and folders
 Temp*.tsx
 zzz_*
