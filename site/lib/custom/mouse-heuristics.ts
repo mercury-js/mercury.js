@@ -100,9 +100,9 @@ function getClosestToMouse(
 
 // TODO: split and intersect for `getClosestToMouse`?
 const MOUSE_HEURISTICS_OPTIONS = Object.freeze({
-  intervalMs: 1000,
+  intervalMs: 250,
   groupByPage: true,
-  maxDistancePx: 100,
+  maxDistancePx: 250,
   nClosestPerGroup: 2, // >0 will sort
   includedPathPrefixes: ['/'],
 });
