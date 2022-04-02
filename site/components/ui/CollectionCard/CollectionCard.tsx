@@ -8,7 +8,7 @@
  * Copyright (c) 2022 Churn Out Labs Ltd. (FI32159032).
  */
 
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 import { ArrowRight } from '@components/icons';
 import type { Product } from '@commerce/types/product';
 import Image, { ImageProps } from 'next/image';
@@ -64,6 +64,7 @@ interface CollectionCardProps {
     type: CardType;
     item: CardItem;
     imageHeight: string;
+    imageProps?: ImageProps;
 };
 
 // TODO: infer from `item` props, if will distinguish?
@@ -79,11 +80,28 @@ const IMG_SIZES = {
   'xs': '200px'
 };
 
+const IMG_PROPS: Partial<ImageProps> = {
+  objectFit: 'cover',
+  loading: 'eager', // TODO: above-the-fold
+  layout: 'fill',
+};
+
+/* eslint-disable-next-line jsx-a11y/alt-text */// @ts-ignore
+const DRYImage = (props: ImageProps) => <Image {...IMG_PROPS} {...props}
+  src={props.src || placeholderImg}
+/>;
+
 const CollectionCard: FC<CollectionCardProps> = ({ 
   type,
   item,
   imageHeight,
+  imageProps={},
 }) => {
+
+  const _DRYImage = useCallback(
+    props => <DRYImage {...imageProps} {...props} />,
+    [imageProps]
+  );
 
   let classes = 'relative w-full h-[100px]';
 
@@ -102,13 +120,9 @@ const CollectionCard: FC<CollectionCardProps> = ({
                 style={{height: imageHeight}}
               >
                                 
-                <Image
-                  src={(item).images[0].url || placeholderImg}
+                <_DRYImage
+                  src={(item).images[0].url}
                   alt={(item)?.name || 'Product Image'}
-                  layout="fill"
-                  objectFit="cover"
-                  // TODO: above-the-fold
-                  loading="eager"
                 />
 
               </div>
@@ -126,7 +140,7 @@ const CollectionCard: FC<CollectionCardProps> = ({
               if (option.displayName === 'color') {
                 return (
                   <div key={i} className={style.optionContainer}>
-                    { option.values.map((value, j) => <div key={j} className={style.colorAlternative} style={{backgroundColor: value.hexColors![0]}}/>) }
+                    { option.values.map((value, j) => <div key={j} className={style.colorAlternative} style={{backgroundColor: (value.hexColors || [])[0]}}/>) }
                   </div>
                 );
                                 
@@ -156,11 +170,9 @@ const CollectionCard: FC<CollectionCardProps> = ({
                 className={style.imgContainer}
                 style={{height: imageHeight}}
               >
-                <Image
-                  src={item.img!.src || placeholderImg}
+                <_DRYImage
+                  src={item.img!.src}
                   alt={`${item.category} category image`}
-                  layout="fill"
-                  objectFit="cover"
                 />
               </div>
 
@@ -185,12 +197,11 @@ const CollectionCard: FC<CollectionCardProps> = ({
             className={style.imgContainer}
             style={{height: imageHeight}}    
           >
-            <Image
+            <_DRYImage
               quality="85"
-              src={item.img!.src || placeholderImg}
+              src={item.img!.src}
               alt={`${item.header} image`}
-              objectFit="cover"
-              layout="fill"
+
             />
           </div>
 
@@ -206,12 +217,10 @@ const CollectionCard: FC<CollectionCardProps> = ({
             className={style.imgContainer}
             style={{height: imageHeight}}    
           >
-            <Image
+            <_DRYImage
               quality="85"
-              src={item.img!.src || placeholderImg}
+              src={item.img!.src}
               alt={`${item.header} image`}
-              objectFit="cover"
-              layout="fill"
             />
 
           </div>

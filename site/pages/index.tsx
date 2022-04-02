@@ -76,6 +76,16 @@ const getDataForCustomGrid = () => {
   return data;
 };
 
+
+const IMG_PROPS = {
+  loading: 'lazy'
+};
+
+const GRID_PROPS = {
+  imageProps: IMG_PROPS,
+};
+
+
 export default function Home({
   products,
 }: InferGetStaticPropsType<typeof getServerSideProps>): JSX.Element {
@@ -106,6 +116,7 @@ export default function Home({
           'sm': 2,
           'xs': 1
         }}
+        {...GRID_PROPS}
       />
       
       <Grid 
@@ -121,6 +132,7 @@ export default function Home({
           'sm': 2,
           'xs': 1
         }}
+        {...GRID_PROPS}
       />
 
       <Grid 
@@ -137,6 +149,7 @@ export default function Home({
           'sm': 3,
           'xs': 2
         }}
+        {...GRID_PROPS}
       />
 
       <Grid 
@@ -152,6 +165,7 @@ export default function Home({
           'sm': 2,
           'xs': 1
         }}
+        {...GRID_PROPS}
       />
 
     </>

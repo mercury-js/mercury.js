@@ -1,15 +1,17 @@
 import { FC, ReactNode, Component } from 'react'
 import style from './Grid.module.css'
 import { CollectionCard } from '@components/ui'
+import { ImageProps } from 'next/image'
 
 interface GridProps {
-  className?: string
-  header?: string
-  items: ReactNode[] | Component[] | any[]
-  type: 'product' | 'productCategory' | 'display' | 'custom'
-  totalItems?: number
-  itemsPerGridLine?: object
-  imageHeightPx?: string
+  className?: string;
+  header?: string;
+  items: ReactNode[] | Component[] | any[];
+  type: 'product' | 'productCategory' | 'display' | 'custom';
+  totalItems?: number;
+  itemsPerGridLine?: object;
+  imageHeightPx?: string;
+  imageProps?: ImageProps;
 }
 
 const defaultNumberOfItems = {
@@ -27,7 +29,8 @@ const Grid: FC<GridProps> = ({
   items,
   totalItems=items.length,
   itemsPerGridLine=defaultNumberOfItems,
-  imageHeightPx='250px'
+  imageHeightPx='250px',
+  imageProps,
 }) => {
 
   let classes = `grid py-20 px-4 gap-6`
@@ -40,7 +43,7 @@ const Grid: FC<GridProps> = ({
     <>
       { header && <h1 className={style.gridHeader}>{header}</h1> }
       <div className={classes}>
-        { items?.slice(0, totalItems).map((item, i) => <CollectionCard key={i} type={type} item={item} imageHeight={imageHeightPx}/>) }     
+        { items?.slice(0, totalItems).map((item, i) => <CollectionCard key={i} type={type} item={item} imageHeight={imageHeightPx} imageProps={imageProps} />) }     
       </div>
     </>
   )

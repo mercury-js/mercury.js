@@ -31,6 +31,7 @@ const ProductImages: FC<ProductImagesProps> = ({ product }) => {
           width="600px"
           height="600px"
           quality="100"
+          priority
         />
       </div>
       <div className={style.thumbnailImagesContainer}>
@@ -46,6 +47,7 @@ const ProductImages: FC<ProductImagesProps> = ({ product }) => {
               width="100px"
               height="100px"
               quality="100"
+              loading="eager"
             />
           </div>
 
