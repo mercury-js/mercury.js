@@ -44,9 +44,9 @@ export async function getServerSideProps({
 
 const getDataForDisplayGrid = () => {
   const data: DisplayCard[] = [
-    {header: 'The Ethical T', copy: 'Ethically sourced with organic materials.', img: {src: '/assets/display1.avif'}},
-    {header: 'Tactlenecks', copy: 'A tactleneck for every occasion.', img: {src: '/assets/display2.avif'}},
-    {header: 'Performant Chinos', copy: 'When jeans will not cut it.', img: {src: '/assets/display3.avif'}},
+    {header: 'The Ethical T', copy: 'Ethically sourced with organic materials.', img: {src: '/assets/display1.jpg'}},
+    {header: 'Tactlenecks', copy: 'A tactleneck for every occasion.', img: {src: '/assets/display2.jpg'}},
+    {header: 'Performant Chinos', copy: 'When jeans will not cut it.', img: {src: '/assets/display3.jpg'}},
   ];
 
   return data;
@@ -54,11 +54,11 @@ const getDataForDisplayGrid = () => {
 
 const getDataForCategoryGrid = () => {
   const data: ProductCategoryCard[] = [
-    {category: 'Tops', subcategory: 'Women\'s', img: {src: '/assets/category1.avif'}, url: '/collections/womens'},
-    {category: 'New Arrivals', subcategory: 'Women\'s', img: {src: '/assets/category2.avif'}, url: '/collections/womens'},
-    {category: 'Sweaters', subcategory: 'Men\'s', img: {src: '/assets/category3.avif'}, url: '/collections/mens'},
-    {category: 'Sweaters', subcategory: 'Women\'s', img: {src: '/assets/category4.avif'}, url: '/collections/womens'},
-    {category: 'Jackets', subcategory: 'Men\'s', img: {src: '/assets/category5.avif'}, url: '/collections/mens'},
+    {category: 'Tops', subcategory: 'Women\'s', img: {src: '/assets/category1.jpg'}, url: '/collections/womens'},
+    {category: 'New Arrivals', subcategory: 'Women\'s', img: {src: '/assets/category2.jpg'}, url: '/collections/womens'},
+    {category: 'Sweaters', subcategory: 'Men\'s', img: {src: '/assets/category3.jpg'}, url: '/collections/mens'},
+    {category: 'Sweaters', subcategory: 'Women\'s', img: {src: '/assets/category4.jpg'}, url: '/collections/womens'},
+    {category: 'Jackets', subcategory: 'Men\'s', img: {src: '/assets/category5.jpg'}, url: '/collections/mens'},
   ];
 
   return data;
@@ -69,8 +69,8 @@ const getDataForCustomGrid = () => {
   const bodyHeaderStyle = { fontSize: '24px', lineHeight: '30px', marginBottom: '30px'};
 
   const data: CustomCard[] = [
-    {body: <div><h1 style={bodyHeaderStyle}>Check out our Environmental impact page to see how we control our carbon footprint.</h1><Link href='/' ><a style={{marginTop: '100px'}}>Learn more</a></Link></div>, img: {src: '/assets/custom1.avif'}},
-    {body: <div><h1 style={bodyHeaderStyle}>Ethicalle sourced. Made to Last.</h1><a style={{marginTop: '100px'}}>Learn more</a></div>, img: {src: '/assets/custom2.avif'}},
+    {body: <div><h1 style={bodyHeaderStyle}>Check out our Environmental impact page to see how we control our carbon footprint.</h1><Link href='/' ><a style={{marginTop: '100px'}}>Learn more</a></Link></div>, img: {src: '/assets/custom1.jpg'}},
+    {body: <div><h1 style={bodyHeaderStyle}>Ethicalle sourced. Made to Last.</h1><a style={{marginTop: '100px'}}>Learn more</a></div>, img: {src: '/assets/custom2.jpg'}},
   ];
 
   return data;
@@ -98,7 +98,7 @@ export default function Home({
         textColor="#FFF"
         buttonText="Shop"
         buttonUrl="/search"
-        backgroundImageUrl="/assets/heroBg.avif"
+        backgroundImageUrl="/assets/heroBg.jpg"
       />
 
 
