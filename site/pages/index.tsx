@@ -70,7 +70,7 @@ const getDataForCustomGrid = () => {
 
   const data: CustomCard[] = [
     {body: <div><h1 style={bodyHeaderStyle}>Check out our Environmental impact page to see how we control our carbon footprint.</h1><Link href='/' ><a style={{marginTop: '100px'}}>Learn more</a></Link></div>, img: {src: '/assets/custom1.jpg'}},
-    {body: <div><h1 style={bodyHeaderStyle}>Ethicalle sourced. Made to Last.</h1><a style={{marginTop: '100px'}}>Learn more</a></div>, img: {src: '/assets/custom2.jpg'}},
+    {body: <div><h1 style={bodyHeaderStyle}>Ethically sourced. Made to Last.</h1><a style={{marginTop: '100px'}}>Learn more</a></div>, img: {src: '/assets/custom2.jpg'}},
   ];
 
   return data;

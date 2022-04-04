@@ -52,7 +52,7 @@ const subCategories = [
   { type: 'links', subcategoryHeader: 'Features', links: links1},
   { type: 'links', subcategoryHeader: 'Apparel', links: links2},
   { type: 'links', subcategoryHeader: 'Shoes & Accessories', links: links3},
-  { type: 'image', img: {src: '/assets/navImg1.jpg', alt: 'New Pant Product Image'}, links: [{href: '/', label: 'Shop New Pant'}]},
+  { type: 'image', img: {src: '/assets/navImg1.jpg', alt: 'New Accessory Product Image'}, links: [{href: '/', label: 'Shop New Accessories'}]},
 ]
 
 
